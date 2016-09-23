@@ -1,0 +1,22 @@
+{
+	"openShift_clusters": [
+		{
+			"id": 1,
+			"labels": {
+				
+			},
+			"openShift_resources": {
+				"projects": [
+					{
+						"build_environment": false,
+						"apps": [],
+						"user_to_role": []
+					}
+				]
+			},
+			"openShift_host_env": "10.1.2.2:8443"
+		}
+	],
+	"team": []
+}
+
