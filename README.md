@@ -13,3 +13,6 @@ These code bases were instrumental in teaching us how to build a Jenkins plugin 
 - [the workflow job plugin](https://github.com/jenkinsci/workflow-job-plugin), which provides Jenkins with the notion of a pipeline and is built primarily by the CloudBees team. like everything in the pipeline ecosystem, we depend on this plugin.
 - [the kubernetes plugin](https://github.com/jenkinsci/kubernetes-pipeline-plugin), which provides a global variable to Jenkins, same mechanism as our global variable, to perform a variety of Kubernetes based activities.
 - [the OpenShift plugin](https://github.com/jenkinsci/openshift-pipeline-plugin), which provides a comprehensive set of pipeline steps to work with OpenShift Container Platform
+
+## Contributing
+See the [contributors guide](https://github.com/rht-labs/api-design/blob/master/CONTRIBUTING.md).
