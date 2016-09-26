@@ -1,0 +1,77 @@
+{
+	"openShift_clusters": [
+		{
+			"id": 1,
+			"labels": {
+				
+			},
+			"openShift_resources": {
+				"projects": [
+					{
+						"name": "dev-project",
+						"build_environment": true,
+						"apps": [
+							{
+								"build_application_commands": ["customBuildAppCommand", "customBuildAppCommand with arguments"],
+								"build_image_commands": [],
+								"deploy_image_commands": [],
+								"context_dir": "build-home-dir",
+								"build_tool": "sh",
+								"scm_ref": "",
+								"name": "cool-application-name",
+								"labels": {
+									
+								},
+								"environment_variables": {
+									
+								}
+							}
+						],
+						"user_to_role": []
+					},
+					{
+						"name": "stage-project",
+						"promotion_environment": true,
+						"apps": [
+							{
+								"build_application_commands": [],
+								"build_image_commands": [],
+								"deploy_image_commands": [],
+								"name": "cool-application-name",
+								"labels": {
+									
+								},
+								"environment_variables": {
+									
+								}
+							}
+						],
+						"user_to_role": []
+					},
+					{
+						"name": "prod-project",
+						"promotion_environment": true,
+						"apps": [
+							{
+								"build_application_commands": [],
+								"build_image_commands": [],
+								"deploy_image_commands": [],
+								"name": "cool-application-name",
+								"labels": {
+									
+								},
+								"environment_variables": {
+									
+								}
+							}
+						],
+						"user_to_role": []
+					}
+				]
+			},
+			"openShift_host_env": "10.1.2.2:8443",
+			"userId" : "admin"
+		}
+	],
+	"team": []
+}

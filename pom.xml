@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ~ The MIT License ~ ~ Copyright (c) 2013-2014, CloudBees, Inc. ~ ~ Permission 
+	is hereby granted, free of charge, to any person obtaining a copy ~ of this 
+	software and associated documentation files (the "Software"), to deal ~ in 
+	the Software without restriction, including without limitation the rights 
+	~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+	~ copies of the Software, and to permit persons to whom the Software is ~ 
+	furnished to do so, subject to the following conditions: ~ ~ The above copyright 
+	notice and this permission notice shall be included in ~ all copies or substantial 
+	portions of the Software. ~ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY 
+	OF ANY KIND, EXPRESS OR ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
+	OF MERCHANTABILITY, ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+	IN NO EVENT SHALL THE ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+	DAMAGES OR OTHER ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
+	ARISING FROM, ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+	DEALINGS IN ~ THE SOFTWARE. -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.jenkins-ci.plugins</groupId>
+		<artifactId>plugin</artifactId>
+		<version>2.5</version>
+		<relativePath />
+	</parent>
+	<groupId>org.jenkins-ci.plugins.workflow</groupId>
+	<artifactId>dynamic-workflow-job</artifactId>
+	<version>0.1-SNAPSHOT</version>
+	<packaging>hpi</packaging>
+	<name>Pipeline: Dynamic Job</name>
+	<url>https://github.com/rht-labs/dynamic-pipeline-jenkins-plugin</url>
+	<licenses>
+		<license>
+			<name>ASL 2.0</name>
+			<url>https://opensource.org/licenses/Apache-2.0</url>
+		</license>
+	</licenses>
+	<!-- Jenkins maven repos -->
+	<repositories>
+		<repository>
+			<id>repo.jenkins-ci.org</id>
+			<url>http://repo.jenkins-ci.org/public/</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>repo.jenkins-ci.org</id>
+			<url>http://repo.jenkins-ci.org/public/</url>
+		</pluginRepository>
+	</pluginRepositories>
+	<properties>
+		<jenkins.version>1.651.2</jenkins.version>
+		<jenkins.cps.version>1.15</jenkins.cps.version>
+		<jenkins.pipeline.version>2.6</jenkins.pipeline.version>
+		<labs.api.version>0.2.0</labs.api.version>
+		<logback.version>1.1.7</logback.version>
+		<mockito.version>2.1.0-RC.1</mockito.version>
+	</properties>
+	<dependencies>
+
+		<!-- this lib comes from https://github.com/rht-labs/api-design/blob/v0.2.0/code-gen/generate-java-client.sh 
+			labs will have a nexus soon so you you don't have to build the client from source.
+		-->
+		<dependency>
+			<groupId>com.rhc</groupId>
+			<artifactId>automation-api-client</artifactId>
+			<version>${labs.api.version}</version>
+		</dependency>
+
+		<!-- provides Step API and the like. We should move to the fabric model 
+			for this? -->
+		<!-- global var API -->
+		<dependency>
+			<groupId>org.jenkins-ci.plugins.workflow</groupId>
+			<artifactId>workflow-cps</artifactId>
+			<version>${jenkins.cps.version}</version>
+		</dependency>
+
+
+		<!-- Jenkins Pipe test harness -->
+		<dependency>
+			<groupId>org.jenkins-ci.plugins.workflow</groupId>
+			<artifactId>workflow-basic-steps</artifactId>
+			<version>${jenkins.cps.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>workflow-support</artifactId>
+			<version>${jenkins.cps.version}</version>
+			<classifier>tests</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jenkins-ci.plugins.workflow</groupId>
+			<artifactId>workflow-job</artifactId>
+			<version>${jenkins.pipeline.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- other test stuff -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.1.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>2.1.0-RC.1</version>
+		</dependency>
+
+
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<configuration>
+					<mainClass>com.rhc.dynamic.pipeline.utils.JettyTestServer</mainClass>
+					<classpathScope>test</classpathScope>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
