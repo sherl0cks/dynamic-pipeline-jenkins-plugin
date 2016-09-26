@@ -34,7 +34,7 @@ import com.rhc.automation.model.Project;
  */
 public class ReleasePipelineVisitor implements Visitor {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger("ReleasePipelineVisitor");
+	private static final Logger LOGGER = LoggerFactory.getLogger(ReleasePipelineVisitor.class);
 	private static final Set<String> SUPPORTED_BUILD_TOOLS = new HashSet<String>(Arrays.asList("node-0.10", "node-4", "mvn-3", "sh"));
 	private final String applicationName;
 	private StringBuilder script;
@@ -49,12 +49,13 @@ public class ReleasePipelineVisitor implements Visitor {
 
 	@Override
 	public void visit(Engagement engagement) {
-		LOGGER.debug("visiting engagement: " + engagement.getName());
+		LOGGER.debug("visiting engagement: {}", engagement.getName());
+		LOGGER.info("");
 	}
 
 	@Override
 	public void visit(OpenShiftCluster cluster) {
-		LOGGER.debug("visiting openShiftCluster: " + cluster.getId());
+		LOGGER.debug("visiting openShiftCluster: {}", cluster.getId());
 
 		// to OpenShift and it's docker image registry
 		script.append("  sh 'oc whoami -t > apiTokenOutput.txt'\n");
@@ -74,7 +75,7 @@ public class ReleasePipelineVisitor implements Visitor {
 
 	@Override
 	public void visit(Project project) {
-		LOGGER.debug("visiting project: " + project.getName());
+		LOGGER.debug("visiting project: {}", project.getName());
 
 		if (project.getBuildEnvironment() != null && project.getBuildEnvironment() == true) {
 			createBuildAppScript(project);

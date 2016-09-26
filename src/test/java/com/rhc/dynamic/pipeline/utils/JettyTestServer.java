@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JettyTestServer {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger("JettyTestServer");
+	private static final Logger LOGGER = LoggerFactory.getLogger(JettyTestServer.class);
 	public static Server server;
 
 	public static void main(String [] args) throws Exception{
@@ -49,7 +49,7 @@ public class JettyTestServer {
 		server.start();
 		server.join();
 		int serverPort = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
-		LOGGER.info("Server port for Jetty: " + serverPort);
+		LOGGER.info("Server port for Jetty: {}", serverPort);
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 		    public void run() {
 		    	System.err.println("hi");

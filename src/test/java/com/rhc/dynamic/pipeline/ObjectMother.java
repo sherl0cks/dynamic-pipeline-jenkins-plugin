@@ -32,25 +32,27 @@ import com.rhc.automation.model.Project;
 /**
  * This is a simple utility for test data. The methods here will provide a
  * configured Engagement, which you can use in the test to generate JSON for use
- * elsewhere in the project. All of the files in the requests folder came from here
+ * elsewhere in the project. All of the files in the requests folder came from
+ * here
  */
 public class ObjectMother {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger("ObjectMother");
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ObjectMother.class);
 
 	/**
-	 * Helper method to generate json to be used in test 
+	 * Helper method to generate json to be used in test
+	 * 
 	 * @throws JsonProcessingException
 	 */
 	@Test
-	public void shouldGenerateSomeStuff()  {
+	public void shouldGenerateSomeStuff() {
 		String applicationName = "cool-application-name";
-		Engagement engagement = buildSingleClusterMultiProjectEngagementNoBuildTool(applicationName );
+		Engagement engagement = buildSingleClusterMultiProjectEngagementNoBuildTool(applicationName);
 		Gson gson = new GsonBuilder().create();
 		String output = gson.toJson(engagement);
-		LOGGER.info("\n\n" + output + "\n\n");
+		LOGGER.info("{}{}{}","\n\n", output, "\n\n");
 	}
-	
+
 	public static Engagement buildEmptyEngagement() {
 		return new Engagement();
 	}

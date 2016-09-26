@@ -24,7 +24,6 @@ import org.jenkinsci.plugins.workflow.cps.CpsScript;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.rhc.automation.model.Engagement;
 import com.squareup.okhttp.OkHttpClient;
@@ -33,15 +32,15 @@ import com.squareup.okhttp.Response;
 
 public class DynamicPipelineFactory implements Serializable {
 
-	private static final long serialVersionUID = -7772221801921220616L;
-	private static final Logger LOGGER = LoggerFactory.getLogger("DynamicPipelineFactory");
+	private static final long serialVersionUID = 1L;
+	private static final Logger LOGGER = LoggerFactory.getLogger(DynamicPipelineFactory.class);
 	public static final String AUTOMATION_API_VERSION = "0.2.0";
 
 	private final CpsScript script;
 	private String configFile;
 	private String applicationName;
 	private transient Engagement engagement;
-	private String pipelineType;
+	private DynamicPipelineType pipelineType;
 	private transient OkHttpClient client = new OkHttpClient();
 
 	public DynamicPipelineFactory(CpsScript script) {
@@ -57,8 +56,6 @@ public class DynamicPipelineFactory implements Serializable {
 		}
 		this.configFile = IOUtils.toString(is);
 		LOGGER.debug(this.configFile);
-		
-		
 		
 		engagement = new GsonBuilder().create().fromJson(this.configFile, Engagement.class);
 
@@ -89,21 +86,21 @@ public class DynamicPipelineFactory implements Serializable {
 	}
 
 	public DynamicPipelineFactory withReleaseType() {
-		this.pipelineType = "Release";
+		this.pipelineType = DynamicPipelineType.RELEASE;
 		return this;
 	}
 
 	public DynamicPipelineFactory withDevelopmentType() {
-		this.pipelineType = "Development";
+		this.pipelineType = DynamicPipelineType.DEVELOPMENT;
 		return this;
 	}
 
 	public String generatePipelineScript() {
 		checkConfiguration();
 		Visitor visitor;
-		if (pipelineType.equalsIgnoreCase("Release")) {
+		if (pipelineType.equals(DynamicPipelineType.RELEASE) ) {
 			visitor = new ReleasePipelineVisitor(applicationName);
-		} else if (pipelineType.equalsIgnoreCase("Development")) {
+		} else if (pipelineType.equals(DynamicPipelineType.DEVELOPMENT)) {
 			visitor = new DevelopmentPipelineVisitor(applicationName);
 		} else {
 			throw new RuntimeException("You must set the pipelineType to either Release or Development");
@@ -111,7 +108,7 @@ public class DynamicPipelineFactory implements Serializable {
 
 		VisitPlanner.orchestrateVisit(visitor, engagement);
 		String pipelineScript = visitor.getPipelineScript();
-		LOGGER.debug("\n\n" + pipelineScript + "\n\n");
+		LOGGER.debug("{}{}{}","\n\n",pipelineScript, "\n\n");
 		return pipelineScript;
 	}
 
@@ -135,7 +132,7 @@ public class DynamicPipelineFactory implements Serializable {
 		if (applicationName == null || applicationName.isEmpty()) {
 			throw new RuntimeException("You must provide a name for this application using withApplicationName()");
 		}
-		if (pipelineType == null || pipelineType.isEmpty() || (!pipelineType.equalsIgnoreCase("Release") && !pipelineType.equalsIgnoreCase("Development"))) {
+		if (pipelineType == null) {
 			throw new RuntimeException("You must set the pipelineType to either Release or Development");
 		}
 

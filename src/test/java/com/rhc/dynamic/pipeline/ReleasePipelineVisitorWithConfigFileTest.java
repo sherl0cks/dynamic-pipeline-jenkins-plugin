@@ -41,7 +41,7 @@ import com.rhc.dynamic.pipeline.utils.TestUtils;
  */
 public class ReleasePipelineVisitorWithConfigFileTest {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger("ReleasePipelineVisitorTest");
+	private static final Logger LOGGER = LoggerFactory.getLogger(ReleasePipelineVisitorWithConfigFileTest.class);
 
 	@Mock
 	private CpsScript mockScript;

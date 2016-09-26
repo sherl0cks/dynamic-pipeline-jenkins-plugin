@@ -56,7 +56,7 @@ import com.squareup.okhttp.Response;
 public class ReleasePipelineVisitorWithHttpConfigTest {
 
 	public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-	private static final Logger LOGGER = LoggerFactory.getLogger("ReleasePipelineVisitorIntegration");
+	private static final Logger LOGGER = LoggerFactory.getLogger(ReleasePipelineVisitorWithHttpConfigTest.class);
 
 	private static Server server;
 	private static int serverPort;
@@ -222,7 +222,7 @@ public class ReleasePipelineVisitorWithHttpConfigTest {
 
 		server.start();
 		serverPort = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
-		LOGGER.info("Server port for Jetty: " + serverPort);
+		LOGGER.info("Server port for Jetty: {}", serverPort);
 
 	}
 
