@@ -26,7 +26,7 @@
 	</parent>
 	<groupId>org.jenkins-ci.plugins.workflow</groupId>
 	<artifactId>dynamic-workflow-job</artifactId>
-	<version>0.1.0</version>
+	<version>0.2.0-SNAPSHOT</version>
 	<packaging>hpi</packaging>
 	<name>Pipeline: Dynamic Job</name>
 	<url>https://github.com/rht-labs/dynamic-pipeline-jenkins-plugin</url>
