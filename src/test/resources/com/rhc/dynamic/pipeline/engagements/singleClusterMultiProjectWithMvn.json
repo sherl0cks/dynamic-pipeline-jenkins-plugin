@@ -1,11 +1,11 @@
 {
-	"openShift_clusters": [
+	"openshift_clusters": [
 		{
 			"id": 1,
 			"labels": {
 				
 			},
-			"openShift_resources": {
+			"openshift_resources": {
 				"projects": [
 					{
 						"name": "dev-project",
@@ -13,6 +13,7 @@
 						"apps": [
 							{
 								"build_application_commands": ["mvn clean deploy"],
+								"git_url": "https://foo.bar.com/justin.git",
 								"build_image_commands": [],
 								"deploy_image_commands": [],
 								"context_dir": "",
@@ -69,8 +70,7 @@
 					}
 				]
 			},
-			"openShift_host_env": "10.1.2.2:8443",
-			"userId" : "admin"
+			"openshift_host_env": "10.1.2.2:8443"
 		}
 	],
 	"team": []

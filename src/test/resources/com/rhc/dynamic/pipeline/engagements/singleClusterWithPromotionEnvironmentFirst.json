@@ -1,11 +1,11 @@
 {
-	"openShift_clusters": [
+	"openshift_clusters": [
 		{
 			"id": 1,
 			"labels": {
 				
 			},
-			"openShift_resources": {
+			"openshift_resources": {
 				"projects": [
 					{
 						"build_environment": false,
@@ -14,7 +14,7 @@
 					}
 				]
 			},
-			"openShift_host_env": "10.1.2.2:8443"
+			"openshift_host_env": "10.1.2.2:8443"
 		}
 	],
 	"team": []

@@ -60,8 +60,9 @@ public class ReleasePipelineVisitor implements Visitor {
 		// to OpenShift and it's docker image registry
 		script.append("  sh 'oc whoami -t > apiTokenOutput.txt'\n");
 		script.append("  String apiToken = readFile( 'apiTokenOutput.txt' ).trim()\n");
-		script.append(String.format("  sh 'oc login %s --insecure-skip-tls-verify=true --username=%s --password=$OPENSHIFT_PASSWORD'%n",
-				cluster.getOpenShiftHostEnv(), cluster.getUserId()));
+		script.append(String.format("  sh 'oc login %s --insecure-skip-tls-verify=true --username=$OPENSHIFT_USERNAME --password=$OPENSHIFT_PASSWORD'%n",
+				cluster.getOpenshiftHostEnv()));
+		//TODO: add userId
 
 		// docker push/pull/tag is temporarily disabled
 		// https://github.com/rht-labs/api-design/issues/28
@@ -99,10 +100,10 @@ public class ReleasePipelineVisitor implements Visitor {
 			script.append("  String apiToken = readFile( 'apiTokenOutput.txt' ).trim()\n");
 			script.append(String.format(
 					"  openshiftTag apiURL: '%s', authToken: apiToken, destStream: '%s', destTag: 'latest', destinationAuthToken: apiToken, destinationNamespace: '%s', namespace: '%s', srcStream: '%s', srcTag: 'latest'%n",
-					lastUsedCluster.getOpenShiftHostEnv(), applicationName, project.getName(), lastUsedProject.getName(), applicationName));
+					lastUsedCluster.getOpenshiftHostEnv(), applicationName, project.getName(), lastUsedProject.getName(), applicationName));
 			script.append(String.format(
 					"  openshiftVerifyDeployment apiURL: '%s', authToken: apiToken, depCfg: '%s', namespace: '%s'%n",
-							lastUsedCluster.getOpenShiftHostEnv(), applicationName, project.getName()));
+							lastUsedCluster.getOpenshiftHostEnv(), applicationName, project.getName()));
 
 		} else {
 			for (String command : cachedDeployImageCommands) {
@@ -158,10 +159,10 @@ public class ReleasePipelineVisitor implements Visitor {
 		script.append("  String apiToken = readFile( 'apiTokenOutput.txt' ).trim()\n");
 		script.append(String.format(
 				"  openshiftBuild apiURL: '%s', authToken: apiToken, bldCfg: '%s', checkForTriggeredDeployments: 'true', namespace: '%s', showBuildLogs: 'true'%n",
-				lastUsedCluster.getOpenShiftHostEnv(), applicationName, project.getName()));
+				lastUsedCluster.getOpenshiftHostEnv(), applicationName, project.getName()));
 
 		script.append(String.format("  openshiftVerifyDeployment apiURL: '%s', authToken: apiToken, depCfg: '%s', namespace: '%s'%n",
-				lastUsedCluster.getOpenShiftHostEnv(), applicationName, project.getName()));
+				lastUsedCluster.getOpenshiftHostEnv(), applicationName, project.getName()));
 	}
 
 	private void createBuildCommands(Application app) {

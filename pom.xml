@@ -53,7 +53,7 @@
 		<jenkins.version>1.651.2</jenkins.version>
 		<jenkins.cps.version>1.15</jenkins.cps.version>
 		<jenkins.pipeline.version>2.6</jenkins.pipeline.version>
-		<labs.api.version>0.2.0</labs.api.version>
+		<labs.api.version>0.3.0</labs.api.version>
 		<logback.version>1.1.7</logback.version>
 		<mockito.version>2.1.0-RC.1</mockito.version>
 	</properties>

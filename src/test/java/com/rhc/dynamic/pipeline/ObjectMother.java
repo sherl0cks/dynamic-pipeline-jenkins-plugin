@@ -60,9 +60,9 @@ public class ObjectMother {
 	public static Engagement buildSingleClusterEngagement() {
 		Engagement engagement = buildEmptyEngagement();
 		String registry = "registry.apps.redhat.com";
-		OpenShiftCluster cluster = new OpenShiftCluster().id(1l).openShiftHostEnv("master.openshift.redhat.com").imageRegistry(registry);
+		OpenShiftCluster cluster = new OpenShiftCluster().id(1l).openshiftHostEnv("master.openshift.redhat.com").imageRegistry(registry);
 
-		engagement.openShiftClusters(new ArrayList<OpenShiftCluster>()).addOpenShiftClustersItem(cluster);
+		engagement.openshiftClusters(new ArrayList<OpenShiftCluster>()).addOpenshiftClustersItem(cluster);
 
 		return engagement;
 	}
@@ -74,7 +74,7 @@ public class ObjectMother {
 	 */
 	public static Engagement buildSingleClusterMultiProjectEngagementNoBuildTool(String applicationName) {
 		Engagement engagement = buildSingleClusterMultiProjectEngagement(applicationName);
-		Application app = engagement.getOpenShiftClusters().get(0).getOpenShiftResources().getProjects().get(0).getApps().get(0);
+		Application app = engagement.getOpenshiftClusters().get(0).getOpenshiftResources().getProjects().get(0).getApps().get(0);
 		app.scmType("").scmRef("customBuildAppCommand,customBuildAppCommand with arguments");
 		return engagement;
 	}
@@ -86,7 +86,7 @@ public class ObjectMother {
 	 */
 	public static Engagement buildSingleClusterMultiProjectEngagementWithCustomBuildImageCommands(String applicationName) {
 		Engagement engagement = buildSingleClusterMultiProjectEngagement(applicationName);
-		Application app = engagement.getOpenShiftClusters().get(0).getOpenShiftResources().getProjects().get(0).getApps().get(0);
+		Application app = engagement.getOpenshiftClusters().get(0).getOpenshiftResources().getProjects().get(0).getApps().get(0);
 		app.scmType("").scmRef("customBuildAppCommand,customBuildAppCommand with arguments").baseImageTag(
 				"customBuildImageCommand,customBuildImageCommand with arguments:customDeployImageCommand,customDeployImageCommand with arguments");
 		return engagement;
@@ -94,14 +94,14 @@ public class ObjectMother {
 
 	public static Engagement buildSingleClusterMultiProjectEngagementWithMvn(String applicationName) {
 		Engagement engagement = buildSingleClusterMultiProjectEngagement(applicationName);
-		Application app = engagement.getOpenShiftClusters().get(0).getOpenShiftResources().getProjects().get(0).getApps().get(0);
+		Application app = engagement.getOpenshiftClusters().get(0).getOpenshiftResources().getProjects().get(0).getApps().get(0);
 		app.scmType("mvn-3").scmRef("mvn clean deploy").contextDir("");
 		return engagement;
 	}
 
 	public static Engagement buildSingleClusterMultiProjectEngagementWithUnsupportedBuildTool(String applicationName) {
 		Engagement engagement = buildSingleClusterMultiProjectEngagement(applicationName);
-		Application app = engagement.getOpenShiftClusters().get(0).getOpenShiftResources().getProjects().get(0).getApps().get(0);
+		Application app = engagement.getOpenshiftClusters().get(0).getOpenshiftResources().getProjects().get(0).getApps().get(0);
 		app.scmType("gradle-3");
 		return engagement;
 	}
@@ -115,7 +115,7 @@ public class ObjectMother {
 		Project stage = new Project().promotionEnvironment(true).name("stage-project").addAppsItem(stageApp);
 		Project prod = new Project().promotionEnvironment(true).name("prod-project").addAppsItem(prodApp);
 		OpenShiftResources resources = new OpenShiftResources().addProjectsItem(dev).addProjectsItem(stage).addProjectsItem(prod);
-		engagement.getOpenShiftClusters().get(0).openShiftResources(resources);
+		engagement.getOpenshiftClusters().get(0).openshiftResources(resources);
 
 		return engagement;
 	}
@@ -124,7 +124,7 @@ public class ObjectMother {
 		Engagement engagement = buildSingleClusterEngagement();
 		Project project = new Project().buildEnvironment(false);
 		OpenShiftResources resources = new OpenShiftResources().addProjectsItem(project);
-		engagement.getOpenShiftClusters().get(0).openShiftResources(resources);
+		engagement.getOpenshiftClusters().get(0).openshiftResources(resources);
 
 		return engagement;
 	}

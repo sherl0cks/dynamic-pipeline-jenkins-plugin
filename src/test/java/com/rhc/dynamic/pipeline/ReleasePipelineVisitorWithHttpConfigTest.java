@@ -148,20 +148,6 @@ public class ReleasePipelineVisitorWithHttpConfigTest {
 				TestUtils.removeWhiteSpace(argument.getValue()));
 	}
 
-	@Test
-	public void shouldCorrectlyCreateLabsEnv() throws IOException {
-		// given
-		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
-		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withReleaseType()
-				.withHttpConfiguration(TestUtils.getEmbeddedServerUrl(serverPort, TestUtils.LABS_ENV_FILE)).withApplicationName("infographic");
-
-		// when
-		factory.generateAndExecutePipelineScript();
-
-		// then
-		verify(mockScript).evaluate(argument.capture());
-		Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("labsEnv.groovy"), TestUtils.removeWhiteSpace(argument.getValue()));
-	}
 
 	@Test
 	public void shouldThrowExceptionForUnsupportedBuildTool() throws IOException {

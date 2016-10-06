@@ -1,10 +1,12 @@
 node {
-	stage ('Code Checkout'){ checkout scm }
+	stage ('Code Checkout'){ 
+	    git url: 'https://foo.bar.com/justin.git', branch: 'master' 
+	}
 
 	stage ('Build App'){
 		sh 'oc whoami -t > apiTokenOutput.txt'
 		String apiToken = readFile( 'apiTokenOutput.txt' ).trim()
-		sh 'oc login 10.1.2.2:8443 --insecure-skip-tls-verify=true --username=admin --password=$OPENSHIFT_PASSWORD'
+		sh 'oc login 10.1.2.2:8443 --insecure-skip-tls-verify=true --username=$OPENSHIFT_USERNAME --password=$OPENSHIFT_PASSWORD'
 
 		echo 'Using build tool: mvn-3'
 		def toolHome = tool 'mvn-3'
