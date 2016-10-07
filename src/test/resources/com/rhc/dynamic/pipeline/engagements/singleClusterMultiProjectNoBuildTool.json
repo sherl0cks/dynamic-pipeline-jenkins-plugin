@@ -9,7 +9,7 @@
 				"projects": [
 					{
 						"name": "dev-project",
-						"build_environment": true,
+						"environment_type": "build",
 						"apps": [
 							{
 								"build_application_commands": ["customBuildAppCommand", "customBuildAppCommand with arguments"],
@@ -17,7 +17,8 @@
 								"deploy_image_commands": [],
 								"context_dir": "build-home-dir",
 								"build_tool": "sh",
-								"scm_ref": "",
+								"scm_ref": "master",
+								"scm_url": "https://foo.bar.com/justin.git",
 								"name": "cool-application-name",
 								"labels": {
 									
@@ -31,7 +32,7 @@
 					},
 					{
 						"name": "stage-project",
-						"promotion_environment": true,
+						"environment_type": "promotion",
 						"apps": [
 							{
 								"build_application_commands": [],
@@ -50,7 +51,7 @@
 					},
 					{
 						"name": "prod-project",
-						"promotion_environment": true,
+						"environment_type": "promotion",
 						"apps": [
 							{
 								"build_application_commands": [],

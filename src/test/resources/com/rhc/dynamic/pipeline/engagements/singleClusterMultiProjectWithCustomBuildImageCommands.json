@@ -9,7 +9,7 @@
 				"projects": [
 					{
 						"name": "dev-project",
-						"build_environment": true,
+						"environment_type": "build",
 						"apps": [
 							{
 								"base_image_tag": "",
@@ -18,7 +18,8 @@
 								"deploy_image_commands": ["customDeployImageCommand","customDeployImageCommand with arguments"],
 								"context_dir": "build-home-dir",
 								"build_tool": "sh",
-								"scm_ref": "",
+								"scm_ref": "feature-branch",
+								"scm_url" : "https://foo.bar.com/mdanter.git",
 								"name": "cool-application-name",
 								"labels": {
 									
@@ -32,7 +33,7 @@
 					},
 					{
 						"name": "stage-project",
-						"promotion_environment": true,
+						"environment_type": "promotion",
 						"apps": [
 							{
 								"build_application_commands": [],
@@ -51,7 +52,7 @@
 					},
 					{
 						"name": "prod-project",
-						"promotion_environment": true,
+						"environment_type": "promotion",
 						"apps": [
 							{
 								"build_application_commands": [],

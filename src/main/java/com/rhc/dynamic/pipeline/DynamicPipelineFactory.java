@@ -40,12 +40,23 @@ public class DynamicPipelineFactory implements Serializable {
 	private String configFile;
 	private String applicationName;
 	private transient Engagement engagement;
-	private DynamicPipelineType pipelineType;
 	private transient OkHttpClient client = new OkHttpClient();
 
 	public DynamicPipelineFactory(CpsScript script) {
 		this.script = script;
 
+	}
+	
+	public void generateAndExecutePipelineScript() {
+		String pipelineScript = generatePipelineScript();
+		script.evaluate(pipelineScript);
+	}
+	
+	public String generatePipelineScript() {
+		checkConfiguration();
+		String pipelineScript = ReleasePipelineScriptGenerator.generate(engagement, applicationName);
+		LOGGER.debug("{}{}{}","\n\n",pipelineScript, "\n\n");
+		return pipelineScript;
 	}
 
 	public DynamicPipelineFactory withConfigurationFile(String fileName) throws IOException {
@@ -84,42 +95,10 @@ public class DynamicPipelineFactory implements Serializable {
 		this.applicationName = appName;
 		return this;
 	}
-
-	public DynamicPipelineFactory withReleaseType() {
-		this.pipelineType = DynamicPipelineType.RELEASE;
+	
+	public DynamicPipelineFactory withApiToken(String apiToken){
+		script.getBinding().setVariable("$OPENSHIFT_API_TOKEN", apiToken);
 		return this;
-	}
-
-	public DynamicPipelineFactory withDevelopmentType() {
-		this.pipelineType = DynamicPipelineType.DEVELOPMENT;
-		return this;
-	}
-
-	public String generatePipelineScript() {
-		checkConfiguration();
-		Visitor visitor;
-		if (pipelineType.equals(DynamicPipelineType.RELEASE) ) {
-			visitor = new ReleasePipelineVisitor(applicationName);
-		} else if (pipelineType.equals(DynamicPipelineType.DEVELOPMENT)) {
-			visitor = new DevelopmentPipelineVisitor(applicationName);
-		} else {
-			throw new RuntimeException("You must set the pipelineType to either Release or Development");
-		}
-
-		VisitPlanner.orchestrateVisit(visitor, engagement);
-		String pipelineScript = visitor.getPipelineScript();
-		LOGGER.debug("{}{}{}","\n\n",pipelineScript, "\n\n");
-		return pipelineScript;
-	}
-
-	public void generateAndExecutePipelineScript() {
-		String pipelineScript = generatePipelineScript();
-		script.evaluate(pipelineScript);
-	}
-
-	public void debug() {
-		String pipelineScript = "node{\n stage 'a'\n stage 'b'\n stage 'c'\n}";
-		script.evaluate(pipelineScript);
 	}
 
 	private void checkConfiguration() {
@@ -132,10 +111,6 @@ public class DynamicPipelineFactory implements Serializable {
 		if (applicationName == null || applicationName.isEmpty()) {
 			throw new RuntimeException("You must provide a name for this application using withApplicationName()");
 		}
-		if (pipelineType == null) {
-			throw new RuntimeException("You must set the pipelineType to either Release or Development");
-		}
-
 	}
 
 }

@@ -28,6 +28,7 @@ import com.rhc.automation.model.Engagement;
 import com.rhc.automation.model.OpenShiftCluster;
 import com.rhc.automation.model.OpenShiftResources;
 import com.rhc.automation.model.Project;
+import com.rhc.automation.model.Project.EnvironmentTypeEnum;
 
 /**
  * This is a simple utility for test data. The methods here will provide a
@@ -111,9 +112,9 @@ public class ObjectMother {
 		Application devApp = new Application().name(applicationName).contextDir("build-home-dir");
 		Application stageApp = new Application().name(applicationName);
 		Application prodApp = new Application().name(applicationName);
-		Project dev = new Project().buildEnvironment(true).name("dev-project").addAppsItem(devApp);
-		Project stage = new Project().promotionEnvironment(true).name("stage-project").addAppsItem(stageApp);
-		Project prod = new Project().promotionEnvironment(true).name("prod-project").addAppsItem(prodApp);
+		Project dev = new Project().environmentType( EnvironmentTypeEnum.BUILD ).name("dev-project").addAppsItem(devApp);
+		Project stage = new Project().environmentType( EnvironmentTypeEnum.PROMOTION ).name("stage-project").addAppsItem(stageApp);
+		Project prod = new Project().environmentType( EnvironmentTypeEnum.PROMOTION ).name("prod-project").addAppsItem(prodApp);
 		OpenShiftResources resources = new OpenShiftResources().addProjectsItem(dev).addProjectsItem(stage).addProjectsItem(prod);
 		engagement.getOpenshiftClusters().get(0).openshiftResources(resources);
 
@@ -122,7 +123,7 @@ public class ObjectMother {
 
 	public static Engagement buildSingleClusterEngagementWithPromotionEnvironmentFirst(String applicationName) {
 		Engagement engagement = buildSingleClusterEngagement();
-		Project project = new Project().buildEnvironment(false);
+		Project project = new Project().environmentType( EnvironmentTypeEnum.PROMOTION );
 		OpenShiftResources resources = new OpenShiftResources().addProjectsItem(project);
 		engagement.getOpenshiftClusters().get(0).openshiftResources(resources);
 

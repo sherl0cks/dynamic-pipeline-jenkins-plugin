@@ -1,11 +1,9 @@
 node {
-	stage ('Code Checkout') { checkout scm }
+	stage ('Code Checkout') { 
+		 git url: 'https://foo.bar.com/mdanter.git', branch: 'feature-branch' 
+	}
 
 	stage ('Build App') {
-		sh 'oc whoami -t > apiTokenOutput.txt'
-		String apiToken = readFile( 'apiTokenOutput.txt' ).trim()
-		sh 'oc login 10.1.2.2:8443 --insecure-skip-tls-verify=true --username=$OPENSHIFT_USERNAME --password=$OPENSHIFT_PASSWORD'
-
 		dir( 'build-home-dir' ) {
 			echo 'Using build tool: sh'
 			sh "customBuildAppCommand"

@@ -9,16 +9,15 @@
 				"projects": [
 					{
 						"name": "dev-project",
-						"build_environment": true,
+						"environment_type": "build",
 						"apps": [
 							{
 								"build_application_commands": ["mvn clean deploy"],
-								"git_url": "https://foo.bar.com/justin.git",
 								"build_image_commands": [],
 								"deploy_image_commands": [],
 								"context_dir": "",
 								"build_tool": "mvn-3",
-								"scm_ref": "",
+								"scm_url": "https://foo.bar.com/justin.git",
 								"name": "cool-application-name",
 								"labels": {
 									
@@ -32,26 +31,17 @@
 					},
 					{
 						"name": "stage-project",
-						"promotion_environment": true,
+						"environment_type": "promotion",
 						"apps": [
 							{
-								"build_application_commands": [],
-								"build_image_commands": [],
-								"deploy_image_commands": [],
-								"name": "cool-application-name",
-								"labels": {
-									
-								},
-								"environment_variables": {
-									
-								}
+								"name": "cool-application-name"
 							}
 						],
 						"user_to_role": []
 					},
 					{
 						"name": "prod-project",
-						"promotion_environment": true,
+						"environment_type": "promotion",
 						"apps": [
 							{
 								"build_application_commands": [],

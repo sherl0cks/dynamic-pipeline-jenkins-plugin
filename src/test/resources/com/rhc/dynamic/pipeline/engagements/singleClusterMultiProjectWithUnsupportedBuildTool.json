@@ -9,7 +9,7 @@
 				"projects": [
 					{
 						"name": "dev-project",
-						"build_environment": true,
+						"environment_type": "build",
 						"apps": [
 							{
 								"build_application_commands": [],
@@ -30,7 +30,7 @@
 					},
 					{
 						"name": "stage-project",
-						"promotion_environment": true,
+						"environment_type": "promotion",
 						"apps": [
 							{
 								"build_application_commands": [],
@@ -49,7 +49,7 @@
 					},
 					{
 						"name": "prod-project",
-						"promotion_environment": true,
+						"environment_type": "promotion",
 						"apps": [
 							{
 								"build_application_commands": [],
