@@ -79,18 +79,18 @@ public class ReleasePipelineVisitorWithConfigFileTest {
 	}
 
 	@Test
-	public void shouldCorrectlyCreateSingleClusterMultiProjectScriptNoBuildTool() throws IOException {
+	public void shouldCorrectlyCreateSingleClusterMultiProjectS2IBuild() throws IOException {
 		// given
 		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
-		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withConfigurationFile(TestUtils.NO_BUILD_TOOL_FILE)
-				.withApplicationName(TestUtils.APPLICATION_NAME);
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withConfigurationFile(TestUtils.S2I_BUILD_FILE)
+				.withApplicationName("jenkins");
 
 		// when
 		factory.generateAndExecutePipelineScript();
 
 		// then
 		verify(mockScript).evaluate(argument.capture());
-		Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptNoBuildTool.groovy"), TestUtils.removeWhiteSpace(argument.getValue()));
+		Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptS2I.groovy"), TestUtils.removeWhiteSpace(argument.getValue()));
 	}
 
 	@Test
@@ -137,6 +137,26 @@ public class ReleasePipelineVisitorWithConfigFileTest {
 		} catch (RuntimeException e) {
 			// then
 			if (e.getMessage() != null && e.getMessage().contains("gradle-3 is currently unsupported")) {
+				// do nothing, this is desired behavior
+			} else {
+				Assert.fail("this is the wrong exception " + e.getMessage());
+			}
+		}
+	}
+	
+	@Test
+	public void shouldThrowExceptionForNoBuildTool() throws IOException {
+		// given
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withConfigurationFile(TestUtils.NO_BUILD_TOOL_FILE)
+				.withApplicationName(TestUtils.APPLICATION_NAME);
+
+		// when
+		try {
+			factory.generatePipelineScript();
+			Assert.fail("did not throw error");
+		} catch (RuntimeException e) {
+			// then
+			if (e.getMessage() != null && e.getMessage().contains("A build tool must be set")) {
 				// do nothing, this is desired behavior
 			} else {
 				Assert.fail("this is the wrong exception " + e.getMessage());

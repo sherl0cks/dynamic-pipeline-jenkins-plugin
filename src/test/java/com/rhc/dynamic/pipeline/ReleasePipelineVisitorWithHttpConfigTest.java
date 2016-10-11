@@ -100,12 +100,12 @@ public class ReleasePipelineVisitorWithHttpConfigTest {
 	}
 
 	@Test
-	public void shouldCorrectlyCreateSingleClusterMultiProjectScriptNoBuildTool() throws IOException {
+	public void shouldCorrectlyCreateSingleClusterMultiProjectS2IBuild() throws IOException {
 		// given
 		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
 		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript)
-				.withHttpConfiguration(TestUtils.getEmbeddedServerUrl(serverPort, TestUtils.NO_BUILD_TOOL_FILE))
-				.withApplicationName(TestUtils.APPLICATION_NAME);
+				.withHttpConfiguration(TestUtils.getEmbeddedServerUrl(serverPort, TestUtils.S2I_BUILD_FILE))
+				.withApplicationName("jenkins");
 
 		// when
 		factory.generateAndExecutePipelineScript();
@@ -113,7 +113,7 @@ public class ReleasePipelineVisitorWithHttpConfigTest {
 		// then
 		verify(mockScript).evaluate(argument.capture());
 		Assert.assertEquals(
-				TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptNoBuildTool.groovy"),
+				TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptS2I.groovy"),
 				TestUtils.removeWhiteSpace(argument.getValue()));
 	}
 
@@ -169,6 +169,28 @@ public class ReleasePipelineVisitorWithHttpConfigTest {
 		} catch (RuntimeException e) {
 			// then
 			if (e.getMessage() != null && e.getMessage().contains("gradle-3 is currently unsupported")) {
+				// do nothing, this is desired behavior
+			} else {
+				Assert.fail("this is the wrong exception " + e.getMessage());
+			}
+		}
+	}
+	
+	@Test
+	public void shouldThrowExceptionForNoBuildTool() throws IOException {
+		// given
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript)
+				.withHttpConfiguration(
+						TestUtils.getEmbeddedServerUrl(serverPort, TestUtils.NO_BUILD_TOOL_FILE))
+				.withApplicationName(TestUtils.APPLICATION_NAME);
+
+		// when
+		try {
+			factory.generatePipelineScript();
+			Assert.fail("did not throw error");
+		} catch (RuntimeException e) {
+			// then
+			if (e.getMessage() != null && e.getMessage().contains("A build tool must be set")) {
 				// do nothing, this is desired behavior
 			} else {
 				Assert.fail("this is the wrong exception " + e.getMessage());

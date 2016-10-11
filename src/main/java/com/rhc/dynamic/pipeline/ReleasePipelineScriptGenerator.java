@@ -33,7 +33,7 @@ public class ReleasePipelineScriptGenerator {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReleasePipelineScriptGenerator.class);
 	private static final Set<String> SUPPORTED_BUILD_TOOLS = new HashSet<String>(
-			Arrays.asList("node-0.10", "node-4", "mvn-3", "sh"));
+			Arrays.asList("node-0.10", "node-4", "mvn-3", "sh", "s2i"));
 
 	public static String generate(Engagement engagement, String applicationName) {
 		StringBuilder script = new StringBuilder();
@@ -173,19 +173,31 @@ public class ReleasePipelineScriptGenerator {
 	private static String createListOfShellCommandsScript(Application app, String tool) {
 		StringBuilder script = new StringBuilder();
 
-		if (tool != null && !tool.isEmpty() && !tool.equals("sh")) {
-			script.append("    def toolHome = tool '").append(tool).append("'\n");
-			if ( tool.contains("mvn")){
-				script.append("    env.JAVA_HOME = tool 'java-1.8'\n");
-			}
-		}
 		if (app.getBuildApplicationCommands() == null || app.getBuildApplicationCommands().isEmpty()) {
-			throw new RuntimeException("app.buildApplicationCommands cannot be empty");
+			if (app.getBuildTool().equals("s2i")) {
+				// do nothing. s2i should not have build commands
+				// worth mentioning here that I realize s2i is broad. we're
+				// covering the case of just s2i assemble, like with Jenkins. if
+				// you have a better naming convention, feel free to open a PR
+			} else {
+				// but every other build tool should
+				throw new RuntimeException("app.buildApplicationCommands cannot be empty");
+			}
+
 		} else {
+			if (app.getBuildTool().equals("s2i")) {
+				throw new RuntimeException("s2i builds should not have build commands");
+			}
+			if ( !tool.equals("sh")) {
+				script.append("    def toolHome = tool '").append(tool).append("'\n");
+				if (tool.contains("mvn")) {
+					script.append("    env.JAVA_HOME = tool 'java-1.8'\n");
+				}
+			}
 			List<String> commands = app.getBuildApplicationCommands();
 			for (String command : commands) {
 				script.append("    sh \"");
-				if (tool != null && !tool.isEmpty() && !tool.equals("sh")) {
+				if (!tool.equals("sh")) {
 					script.append("${toolHome}/bin/");
 				}
 				script.append(command).append("\"\n");
