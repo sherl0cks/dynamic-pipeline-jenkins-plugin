@@ -5,8 +5,8 @@ node {
 
 	stage ('Build App'){
 		echo 'Using build tool: mvn-3'
-		env.JAVA_HOME = tool 'java-1.8'
 		def toolHome = tool 'mvn-3'
+		env.JAVA_HOME = tool 'java-1.8'
 		sh "${toolHome}/bin/mvn clean deploy"
 	}
 

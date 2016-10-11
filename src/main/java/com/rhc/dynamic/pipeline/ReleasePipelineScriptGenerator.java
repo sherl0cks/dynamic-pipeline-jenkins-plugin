@@ -175,6 +175,9 @@ public class ReleasePipelineScriptGenerator {
 
 		if (tool != null && !tool.isEmpty() && !tool.equals("sh")) {
 			script.append("    def toolHome = tool '").append(tool).append("'\n");
+			if ( tool.contains("mvn")){
+				script.append("    env.JAVA_HOME = tool 'java-1.8'\n");
+			}
 		}
 		if (app.getBuildApplicationCommands() == null || app.getBuildApplicationCommands().isEmpty()) {
 			throw new RuntimeException("app.buildApplicationCommands cannot be empty");
