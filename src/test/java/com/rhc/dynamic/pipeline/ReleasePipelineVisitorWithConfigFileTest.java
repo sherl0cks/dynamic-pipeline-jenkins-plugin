@@ -19,7 +19,6 @@ import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 
-import org.apache.commons.io.IOUtils;
 import org.jenkinsci.plugins.workflow.cps.CpsScript;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -52,7 +51,7 @@ public class ReleasePipelineVisitorWithConfigFileTest {
 	@Test
 	public void shouldFailWhenNoConfigurationIsProvided() throws IOException {
 		// given
-		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withReleaseType().withApplicationName(TestUtils.APPLICATION_NAME);
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withApplicationName(TestUtils.APPLICATION_NAME);
 
 		// when
 		try {
@@ -67,7 +66,7 @@ public class ReleasePipelineVisitorWithConfigFileTest {
 	@Test
 	public void shouldFailWhenNoApplicationNameIsProvided() throws IOException {
 		// given
-		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withReleaseType().withConfigurationFile(TestUtils.NO_BUILD_TOOL_FILE);
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withConfigurationFile(TestUtils.NO_BUILD_TOOL_FILE);
 
 		// when
 		try {
@@ -80,25 +79,25 @@ public class ReleasePipelineVisitorWithConfigFileTest {
 	}
 
 	@Test
-	public void shouldCorrectlyCreateSingleClusterMultiProjectScriptNoBuildTool() throws IOException {
+	public void shouldCorrectlyCreateSingleClusterMultiProjectS2IBuild() throws IOException {
 		// given
 		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
-		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withReleaseType().withConfigurationFile(TestUtils.NO_BUILD_TOOL_FILE)
-				.withApplicationName(TestUtils.APPLICATION_NAME);
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withConfigurationFile(TestUtils.S2I_BUILD_FILE)
+				.withApplicationName("jenkins");
 
 		// when
 		factory.generateAndExecutePipelineScript();
 
 		// then
 		verify(mockScript).evaluate(argument.capture());
-		Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptNoBuildTool.groovy"), TestUtils.removeWhiteSpace(argument.getValue()));
+		Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptS2I.groovy"), TestUtils.removeWhiteSpace(argument.getValue()));
 	}
 
 	@Test
 	public void shouldCorrectlyCreateSingleClusterMultiProjectScriptWithCustomBuildImageAndCustomDeployCommands() throws IOException {
 		// given
 		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
-		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withReleaseType().withConfigurationFile(TestUtils.CUSTOM_BUILD_IMAGE_FILE)
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withConfigurationFile(TestUtils.CUSTOM_BUILD_IMAGE_FILE)
 				.withApplicationName(TestUtils.APPLICATION_NAME);
 
 		// when
@@ -113,7 +112,7 @@ public class ReleasePipelineVisitorWithConfigFileTest {
 	public void shouldCorrectlyCreateSingleClusterMultiProjectScriptWithMvn() throws IOException {
 		// given
 		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
-		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withReleaseType().withConfigurationFile(TestUtils.MVN_BUILD_FILE)
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withConfigurationFile(TestUtils.MVN_BUILD_FILE)
 				.withApplicationName(TestUtils.APPLICATION_NAME);
 
 		// when
@@ -124,26 +123,11 @@ public class ReleasePipelineVisitorWithConfigFileTest {
 		Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptMvn3.groovy"), TestUtils.removeWhiteSpace(argument.getValue()));
 	}
 	
-	
-	@Test
-	public void shouldCorrectlyCreateLabsEnv() throws IOException {
-		// given
-		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
-		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withReleaseType().withConfigurationFile(TestUtils.LABS_ENV_FILE)
-				.withApplicationName("infographic");
-
-		// when
-		factory.generateAndExecutePipelineScript();
-
-		// then
-		verify(mockScript).evaluate(argument.capture());
-		Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("labsEnv.groovy"), TestUtils.removeWhiteSpace(argument.getValue()));
-	}
 
 	@Test
 	public void shouldThrowExceptionForUnsupportedBuildTool() throws IOException {
 		// given
-		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withReleaseType().withConfigurationFile(TestUtils.UNSUPPORTED_BUILD_TOOL_FILE)
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withConfigurationFile(TestUtils.UNSUPPORTED_BUILD_TOOL_FILE)
 				.withApplicationName(TestUtils.APPLICATION_NAME);
 
 		// when
@@ -159,11 +143,11 @@ public class ReleasePipelineVisitorWithConfigFileTest {
 			}
 		}
 	}
-
+	
 	@Test
-	public void shouldThrowExceptionBecauseFirstProjectIsNotABuildEnv() throws IOException {
+	public void shouldThrowExceptionForNoBuildTool() throws IOException {
 		// given
-		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withReleaseType().withConfigurationFile(TestUtils.PROMOTION_ENV_FIRST_FILE)
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withConfigurationFile(TestUtils.NO_BUILD_TOOL_FILE)
 				.withApplicationName(TestUtils.APPLICATION_NAME);
 
 		// when
@@ -172,14 +156,12 @@ public class ReleasePipelineVisitorWithConfigFileTest {
 			Assert.fail("did not throw error");
 		} catch (RuntimeException e) {
 			// then
-			if (e.getMessage() != null && e.getMessage().equals(VisitPlanner.BUILD_ENV_ERR)) {
+			if (e.getMessage() != null && e.getMessage().contains("A build tool must be set")) {
 				// do nothing, this is desired behavior
 			} else {
 				Assert.fail("this is the wrong exception " + e.getMessage());
 			}
 		}
 	}
-
-// dynamicPipeline.withReleaseType().withHttpConfiguration('http://localhost:39069/com/rhc/dynamic/pipeline/engagements/singleClusterMultiProjectWithMvn.json').withApplicationName('cool-application-name').generateAndExecutePipelineScript()
 
 }

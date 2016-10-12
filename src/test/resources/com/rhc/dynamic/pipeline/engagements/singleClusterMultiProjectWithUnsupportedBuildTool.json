@@ -1,15 +1,15 @@
 {
-	"openShift_clusters": [
+	"openshift_clusters": [
 		{
 			"id": 1,
 			"labels": {
 				
 			},
-			"openShift_resources": {
+			"openshift_resources": {
 				"projects": [
 					{
 						"name": "dev-project",
-						"build_environment": true,
+						"environment_type": "build",
 						"apps": [
 							{
 								"build_application_commands": [],
@@ -30,7 +30,7 @@
 					},
 					{
 						"name": "stage-project",
-						"promotion_environment": true,
+						"environment_type": "promotion",
 						"apps": [
 							{
 								"build_application_commands": [],
@@ -49,7 +49,7 @@
 					},
 					{
 						"name": "prod-project",
-						"promotion_environment": true,
+						"environment_type": "promotion",
 						"apps": [
 							{
 								"build_application_commands": [],
@@ -68,8 +68,7 @@
 					}
 				]
 			},
-			"openShift_host_env": "10.1.2.2:8443",
-			"userId" : "admin"
+			"openshift_host_env": "10.1.2.2:8443"
 		}
 	],
 	"team": []

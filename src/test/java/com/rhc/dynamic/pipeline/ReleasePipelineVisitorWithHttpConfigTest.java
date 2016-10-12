@@ -40,9 +40,6 @@ import org.slf4j.LoggerFactory;
 
 import com.rhc.dynamic.pipeline.utils.TestUtils;
 import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 /**
  * We're using mockito to stub out Jenkins interactions. These links should
@@ -70,7 +67,8 @@ public class ReleasePipelineVisitorWithHttpConfigTest {
 	@Test
 	public void shouldFailWhenNoConfigurationIsProvided() throws IOException {
 		// given
-		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withReleaseType().withApplicationName(TestUtils.APPLICATION_NAME);
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript)
+				.withApplicationName(TestUtils.APPLICATION_NAME);
 
 		// when
 		try {
@@ -78,14 +76,16 @@ public class ReleasePipelineVisitorWithHttpConfigTest {
 			Assert.fail("An exception should have been thrown");
 		} catch (RuntimeException e) {
 			// then
-			Assert.assertEquals("You must provide a configuration on the classpath, or with HTTP, using withConfiguration()", e.getMessage());
+			Assert.assertEquals(
+					"You must provide a configuration on the classpath, or with HTTP, using withConfiguration()",
+					e.getMessage());
 		}
 	}
 
 	@Test
 	public void shouldFailWhenNoApplicationNameIsProvided() throws IOException {
 		// given
-		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withReleaseType()
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript)
 				.withHttpConfiguration(TestUtils.getEmbeddedServerUrl(serverPort, TestUtils.NO_BUILD_TOOL_FILE));
 
 		// when
@@ -94,32 +94,35 @@ public class ReleasePipelineVisitorWithHttpConfigTest {
 			Assert.fail("An exception should have been thrown");
 		} catch (RuntimeException e) {
 			// then
-			Assert.assertEquals("You must provide a name for this application using withApplicationName()", e.getMessage());
+			Assert.assertEquals("You must provide a name for this application using withApplicationName()",
+					e.getMessage());
 		}
 	}
 
 	@Test
-	public void shouldCorrectlyCreateSingleClusterMultiProjectScriptNoBuildTool() throws IOException {
+	public void shouldCorrectlyCreateSingleClusterMultiProjectS2IBuild() throws IOException {
 		// given
 		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
-		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withReleaseType()
-				.withHttpConfiguration(TestUtils.getEmbeddedServerUrl(serverPort, TestUtils.NO_BUILD_TOOL_FILE))
-				.withApplicationName(TestUtils.APPLICATION_NAME);
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript)
+				.withHttpConfiguration(TestUtils.getEmbeddedServerUrl(serverPort, TestUtils.S2I_BUILD_FILE))
+				.withApplicationName("jenkins");
 
 		// when
 		factory.generateAndExecutePipelineScript();
 
 		// then
 		verify(mockScript).evaluate(argument.capture());
-		Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptNoBuildTool.groovy"),
+		Assert.assertEquals(
+				TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptS2I.groovy"),
 				TestUtils.removeWhiteSpace(argument.getValue()));
 	}
 
 	@Test
-	public void shouldCorrectlyCreateSingleClusterMultiProjectScriptWithCustomBuildImageAndCustomDeployCommands() throws IOException {
+	public void shouldCorrectlyCreateSingleClusterMultiProjectScriptWithCustomBuildImageAndCustomDeployCommands()
+			throws IOException {
 		// given
 		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
-		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withReleaseType()
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript)
 				.withHttpConfiguration(TestUtils.getEmbeddedServerUrl(serverPort, TestUtils.CUSTOM_BUILD_IMAGE_FILE))
 				.withApplicationName(TestUtils.APPLICATION_NAME);
 
@@ -128,16 +131,19 @@ public class ReleasePipelineVisitorWithHttpConfigTest {
 
 		// then
 		verify(mockScript).evaluate(argument.capture());
-		Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptCustomCommands.groovy"),
+		Assert.assertEquals(
+				TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptCustomCommands.groovy"),
 				TestUtils.removeWhiteSpace(argument.getValue()));
-	}
+	}	
+	
 
 	@Test
 	public void shouldCorrectlyCreateSingleClusterMultiProjectScriptWithMvn() throws IOException {
 		// given
 		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
-		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withReleaseType()
-				.withHttpConfiguration(TestUtils.getEmbeddedServerUrl(serverPort, TestUtils.MVN_BUILD_FILE)).withApplicationName(TestUtils.APPLICATION_NAME);
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript)
+				.withHttpConfiguration(TestUtils.getEmbeddedServerUrl(serverPort, TestUtils.MVN_BUILD_FILE))
+				.withApplicationName(TestUtils.APPLICATION_NAME);
 
 		// when
 		factory.generateAndExecutePipelineScript();
@@ -149,25 +155,11 @@ public class ReleasePipelineVisitorWithHttpConfigTest {
 	}
 
 	@Test
-	public void shouldCorrectlyCreateLabsEnv() throws IOException {
-		// given
-		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
-		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withReleaseType()
-				.withHttpConfiguration(TestUtils.getEmbeddedServerUrl(serverPort, TestUtils.LABS_ENV_FILE)).withApplicationName("infographic");
-
-		// when
-		factory.generateAndExecutePipelineScript();
-
-		// then
-		verify(mockScript).evaluate(argument.capture());
-		Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("labsEnv.groovy"), TestUtils.removeWhiteSpace(argument.getValue()));
-	}
-
-	@Test
 	public void shouldThrowExceptionForUnsupportedBuildTool() throws IOException {
 		// given
-		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withReleaseType()
-				.withHttpConfiguration(TestUtils.getEmbeddedServerUrl(serverPort, TestUtils.UNSUPPORTED_BUILD_TOOL_FILE))
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript)
+				.withHttpConfiguration(
+						TestUtils.getEmbeddedServerUrl(serverPort, TestUtils.UNSUPPORTED_BUILD_TOOL_FILE))
 				.withApplicationName(TestUtils.APPLICATION_NAME);
 
 		// when
@@ -183,12 +175,13 @@ public class ReleasePipelineVisitorWithHttpConfigTest {
 			}
 		}
 	}
-
+	
 	@Test
-	public void shouldThrowExceptionBecauseFirstProjectIsNotABuildEnv() throws IOException {
+	public void shouldThrowExceptionForNoBuildTool() throws IOException {
 		// given
-		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withReleaseType()
-				.withHttpConfiguration(TestUtils.getEmbeddedServerUrl(serverPort, TestUtils.PROMOTION_ENV_FIRST_FILE))
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript)
+				.withHttpConfiguration(
+						TestUtils.getEmbeddedServerUrl(serverPort, TestUtils.NO_BUILD_TOOL_FILE))
 				.withApplicationName(TestUtils.APPLICATION_NAME);
 
 		// when
@@ -197,13 +190,14 @@ public class ReleasePipelineVisitorWithHttpConfigTest {
 			Assert.fail("did not throw error");
 		} catch (RuntimeException e) {
 			// then
-			if (e.getMessage() != null && e.getMessage().equals(VisitPlanner.BUILD_ENV_ERR)) {
+			if (e.getMessage() != null && e.getMessage().contains("A build tool must be set")) {
 				// do nothing, this is desired behavior
 			} else {
 				Assert.fail("this is the wrong exception " + e.getMessage());
 			}
 		}
 	}
+
 
 	@BeforeClass
 	public static void server() throws Exception {

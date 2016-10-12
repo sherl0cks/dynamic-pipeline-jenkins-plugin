@@ -24,10 +24,10 @@ public class TestUtils {
 
 	public static final String APPLICATION_NAME = "cool-application-name";
 	public static final String NO_BUILD_TOOL_FILE = "com/rhc/dynamic/pipeline/engagements/singleClusterMultiProjectNoBuildTool.json";
+	public static final String S2I_BUILD_FILE = "com/rhc/dynamic/pipeline/engagements/singleClusterMultiProjectWithS2I.json";
 	public static final String CUSTOM_BUILD_IMAGE_FILE = "com/rhc/dynamic/pipeline/engagements/singleClusterMultiProjectWithCustomBuildImageCommands.json";
 	public static final String MVN_BUILD_FILE = "com/rhc/dynamic/pipeline/engagements/singleClusterMultiProjectWithMvn.json";
 	public static final String UNSUPPORTED_BUILD_TOOL_FILE = "com/rhc/dynamic/pipeline/engagements/singleClusterMultiProjectWithUnsupportedBuildTool.json";
-	public static final String PROMOTION_ENV_FIRST_FILE = "com/rhc/dynamic/pipeline/engagements/singleClusterWithPromotionEnvironmentFirst.json";
 	public static final String LABS_ENV_FILE = "com/rhc/dynamic/pipeline/engagements/labsEnv.json";
 
 	
