@@ -42,4 +42,8 @@ public final class EngagementDAO {
 		}
 		return null;
 	}
+
+	public static OpenShiftCluster getBuildCluster(Engagement engagement){
+		return engagement.getOpenshiftClusters().get(0);
+	}
 }

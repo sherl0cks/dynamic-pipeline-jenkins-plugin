@@ -83,7 +83,12 @@ public class ReleasePipelineScriptGenerator {
 		StringBuilder script = new StringBuilder();
 		script.append("\n  stage ('Build Image and Deploy to Dev') {\n");
 		Application app = EngagementDAO.getApplicationFromBuildProject(engagement, applicationName);
-		if (app.getBuildImageCommands() == null || app.getBuildImageCommands().isEmpty()) {
+		if ( app.getLabels().containsKey("provider") && app.getLabels().get("provider").equals("fabric8")){
+			script.append("    echo 'Found label \"provider=fabric8\", we're generating the s2i binary build commands'\n");
+			script.append(String.format("    sh 'oc login %s --token=$OPENSHIFT_API_TOKEN --insecure-skip-tls-verify'%n", EngagementDAO.getBuildCluster(engagement).getOpenshiftHostEnv()));
+			script.append(String.format("    sh 'oc start-build %s --from-dir=. --follow -n %s'", applicationName, EngagementDAO.getBuildProject(engagement).getName()));
+		}
+		else if (app.getBuildImageCommands() == null || app.getBuildImageCommands().isEmpty()) {
 			script.append("    echo 'No buildImageCommands, using default OpenShift image build and deploy'\n");
 			script.append(createDefaultOpenShiftBuildAndDeployScript(engagement, applicationName));
 		} else {
@@ -100,7 +105,7 @@ public class ReleasePipelineScriptGenerator {
 
 	private static String generateAllPromotionStages(Engagement engagement, String applicationName) {
 		StringBuilder script = new StringBuilder();
-		OpenShiftCluster srcCluster = engagement.getOpenshiftClusters().get(0);
+		OpenShiftCluster srcCluster = EngagementDAO.getBuildCluster(engagement);
 		Project srcProject = srcCluster.getOpenshiftResources().getProjects().get(0);
 
 		for (OpenShiftCluster cluster : engagement.getOpenshiftClusters()) {

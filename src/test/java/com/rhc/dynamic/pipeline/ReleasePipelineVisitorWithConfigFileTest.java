@@ -123,6 +123,20 @@ public class ReleasePipelineVisitorWithConfigFileTest {
 		Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptMvn3.groovy"), TestUtils.removeWhiteSpace(argument.getValue()));
 	}
 	
+	@Test
+	public void shouldCorrectlyCreateSingleClusterMultiProjectScriptWithFabric8() throws IOException {
+		// given
+		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withConfigurationFile(TestUtils.FABRIC8_BUILD_FILE)
+				.withApplicationName(TestUtils.APPLICATION_NAME);
+
+		// when
+		factory.generateAndExecutePipelineScript();
+
+		// then
+		verify(mockScript).evaluate(argument.capture());
+		Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptFabric8.groovy"), TestUtils.removeWhiteSpace(argument.getValue()));
+	}
 
 	@Test
 	public void shouldThrowExceptionForUnsupportedBuildTool() throws IOException {
