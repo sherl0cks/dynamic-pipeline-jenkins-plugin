@@ -139,6 +139,21 @@ public class ReleasePipelineVisitorWithConfigFileTest {
 	}
 
 	@Test
+	public void shouldCorrectlyCreateAutomationApi() throws IOException {
+		// given
+		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withConfigurationFile(TestUtils.LABS_ENV_FILE)
+				.withApplicationName("automation-api");
+
+		// when
+		factory.generateAndExecutePipelineScript();
+
+		// then
+		verify(mockScript).evaluate(argument.capture());
+		Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("labs-env.groovy"), TestUtils.removeWhiteSpace(argument.getValue()));
+	}
+
+	@Test
 	public void shouldThrowExceptionForUnsupportedBuildTool() throws IOException {
 		// given
 		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withConfigurationFile(TestUtils.UNSUPPORTED_BUILD_TOOL_FILE)

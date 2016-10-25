@@ -29,7 +29,7 @@ public class TestUtils {
 	public static final String MVN_BUILD_FILE = "com/rhc/dynamic/pipeline/engagements/singleClusterMultiProjectWithMvn.json";
 	public static final String FABRIC8_BUILD_FILE = "com/rhc/dynamic/pipeline/engagements/singleClusterMultiProjectWithFabric8.json";
 	public static final String UNSUPPORTED_BUILD_TOOL_FILE = "com/rhc/dynamic/pipeline/engagements/singleClusterMultiProjectWithUnsupportedBuildTool.json";
-	public static final String LABS_ENV_FILE = "com/rhc/dynamic/pipeline/engagements/labsEnv.json";
+	public static final String LABS_ENV_FILE = "com/rhc/dynamic/pipeline/engagements/labs-env.json";
 
 	
 	public static String getPipelineScriptFromFileWithoutWhitespace(String fileName) throws IOException {
