@@ -182,8 +182,37 @@ public class ReleasePipelineVisitorWithHttpConfigTest {
 
 		// then
 		verify(mockScript).evaluate(argument.capture());
-		Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("labs-env.groovy"), TestUtils.removeWhiteSpace(argument.getValue()));
+		Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("automation-api.groovy"), TestUtils.removeWhiteSpace(argument.getValue()));
 	}
+
+	@Test
+	public void shouldCorrectlyCreateJenkins() throws IOException {
+		// given
+		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withHttpConfiguration(TestUtils.getEmbeddedServerUrl(serverPort, TestUtils.LABS_ENV_FILE))
+				.withApplicationName("jenkins");
+
+		// when
+		factory.generateAndExecutePipelineScript();
+
+		// then
+		verify(mockScript).evaluate(argument.capture());
+		Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("jenkins.groovy"), TestUtils.removeWhiteSpace(argument.getValue()));
+	}
+
+
+	@Test
+	public void shouldCorrectlyCreateATO() throws IOException {
+		// given
+		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withHttpConfiguration("https://raw.githubusercontent.com/sherl0cks/ato-env/6c65548f4a34ea52a16eebf818ebea5e9e862278/demo_env.json")
+				.withApplicationName("infographic");
+
+		// when
+		factory.generateAndExecutePipelineScript();
+
+	}
+
 
 	@Test
 	public void shouldThrowExceptionForUnsupportedBuildTool() throws IOException {

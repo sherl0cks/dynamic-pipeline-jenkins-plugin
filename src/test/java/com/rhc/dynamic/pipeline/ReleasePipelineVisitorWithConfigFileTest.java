@@ -150,8 +150,24 @@ public class ReleasePipelineVisitorWithConfigFileTest {
 
 		// then
 		verify(mockScript).evaluate(argument.capture());
-		Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("labs-env.groovy"), TestUtils.removeWhiteSpace(argument.getValue()));
+		Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("automation-api.groovy"), TestUtils.removeWhiteSpace(argument.getValue()));
 	}
+
+	@Test
+	public void shouldCorrectlyCreateJenkins() throws IOException {
+		// given
+		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
+		DynamicPipelineFactory factory = new DynamicPipelineFactory(mockScript).withConfigurationFile(TestUtils.LABS_ENV_FILE)
+				.withApplicationName("jenkins");
+
+		// when
+		factory.generateAndExecutePipelineScript();
+
+		// then
+		verify(mockScript).evaluate(argument.capture());
+		Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("jenkins.groovy"), TestUtils.removeWhiteSpace(argument.getValue()));
+	}
+
 
 	@Test
 	public void shouldThrowExceptionForUnsupportedBuildTool() throws IOException {

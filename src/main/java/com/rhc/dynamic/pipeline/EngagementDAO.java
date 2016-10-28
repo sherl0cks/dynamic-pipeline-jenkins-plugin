@@ -77,4 +77,12 @@ public final class EngagementDAO {
 	public static OpenShiftCluster getBuildCluster(Engagement engagement){
 		return engagement.getOpenshiftClusters().get(0);
 	}
+
+	public static boolean isProjectFinalProjectForApplication(Project project, String applicationName, Engagement engagement){
+		List<Project> projects = getPromotionProjectsForApplication( engagement, applicationName );
+		if ( projects.get( projects.size() - 1  ).getName().equals( project.getName() ) ){
+			return true;
+		}
+		return false;
+	}
 }
