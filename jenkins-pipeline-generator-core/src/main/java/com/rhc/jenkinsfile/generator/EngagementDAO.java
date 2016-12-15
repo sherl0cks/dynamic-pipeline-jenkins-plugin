@@ -1,4 +1,4 @@
-package com.rhc.dynamic.pipeline;
+package com.rhc.jenkinsfile.generator;
 
 import com.rhc.automation.model.Application;
 import com.rhc.automation.model.Engagement;
