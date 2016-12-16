@@ -15,7 +15,7 @@ Take a look at the tests. It's pretty straightforward. This module builds normal
 
 ## CLI
 
-Simple fat JAR to provide a command line interface to generate Jenkinsfile from the engagement. You can download a version from our [nexus](http://nexus.core.rht-labs.com/#browse/browse/components:labs-snapshots), which requires ETL VPN (download the `*-jar-with-dependencies.jar` version).
+Simple fat JAR to provide a command line interface to generate Jenkinsfile from the engagement. You can download a version from the [Jenkins Build](https://jenkins.core.rht-labs.com/job/jenkins-pipeline-generator-ci/) (download the `*-jar-with-dependencies.jar` version).
 
 ### CLI Usage
 
