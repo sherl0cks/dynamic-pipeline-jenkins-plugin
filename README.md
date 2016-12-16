@@ -1,13 +1,48 @@
-# Dynamic Pipeline Jenkins Plugin
+# Jenkins Pipeline Generator
 
-The goal of this pipeline is to provide a very simple abstraction over top of Jenkins pipeline so that users can create powerful, dynamic pipelines without having to have any programming skills. This will be done by:
+This repository is evolving. Originally, it was focused on the development of a Jenkins plugin that generate pipeline code in the form of `Jenkinsfile.` The core generation code has been broken out into it's own module, and we now plan to expose it's functionality via CLI and REST API, in addition to Jenkins plugin.
+
+## Building From Source
+
+`mvn clean install/deploy -Denforcer.skip=true` from the root directory. The Jenkins Plugin currently has some issues, thus the `-Denforcer.skip=true`.
+
+## Core Generator
+
+Take a look at the tests. It's pretty straightforward. This module builds normally right now e.g. `mvn clean install/deploy` is fine. The basics are:
+
+- `ReleasePipelineJenkinsfileGenerator` which is the main point of entry
+- `EngagementDAO` which is used to manipulate the `Engagement` object hierarchy defined in our [Automation API](https://github.com/rht-labs/api-design) into a format more convenient for Jenkinsfile generation.
+
+## CLI
+
+Simple fat JAR to provide a command line interface to generate Jenkinsfile from the engagement. You can download a version from our [nexus](http://nexus.core.rht-labs.com/#browse/browse/components:labs-snapshots), which requires ETL VPN (download the `*-jar-with-dependencies.jar` version).
+
+### CLI Usage
+
+- Use the CLI itself to get the latest usage. Download the `*-jar-with-dependencies.jar` version and then `java -jar jenkins-pipeline-generator-cli-jar-with-dependencies.jar`
+
+### CLI Key Classes
+- `JenkinsfileGeneratorCli` uses [Apache CLI](https://commons.apache.org/proper/commons-cli/usage.html) to provide a testable component
+- `CliApdater` provides a Java `main` 
+
+## REST API
+
+**TODO**
+
+## Jenkins Plugin
+
+While this is work our work started, we're likely going to eschew efforts on this endpoint in favor of the CLI and REST API. 
+
+*The current build fails maven enforcer rules defined by the Jenkins plugin parent, so you must build with `mvn clean install -Denforcer.skip=true`*
+
+Built around the following concepts:
 
 1. providing a declarative data model for environment promotion. this work is currently being done [here](https://github.com/rht-labs/api-design)
 2. consuming the data model Jenkins global variable called `dynamicPipeline`, which can retrieve the data model from the SCM repo or via http.
 3. generating Jenkinsfile from the data model and then executing it in the same Groovy shell as the pipeline (know as a `CpsScript` in the Jenkins lingo).
 
 
-## Required Jenkins Variables
+### Required Jenkins Plugin Variables
 
 This is a list of variables that must be set in Jenkins in order to ensure that the generate script executes as expected. If you are using the seed jobs in the [rht-labs s2i configuration](https://github.com/rht-labs/openshift-jenkins-s2i-config) then these variables will be exposed as require parameters in the seed jobs.
 

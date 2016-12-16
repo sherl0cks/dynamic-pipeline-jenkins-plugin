@@ -15,8 +15,6 @@
  */
 package com.rhc.jenkinsfile.generator.utils;
 
-import com.google.gson.GsonBuilder;
-import com.rhc.automation.model.Engagement;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -40,16 +38,6 @@ public class TestUtils {
 
     public static String getPipelineScriptFromFile(String fileName) throws IOException {
         return IOUtils.toString(TestUtils.class.getClassLoader().getResourceAsStream("com/rhc/jenkinsfile/generator/scripts/" + fileName));
-    }
-
-    public static String getEngagementJSONFromFile(String fileName) throws IOException {
-        return IOUtils.toString(TestUtils.class.getClassLoader().getResourceAsStream(fileName));
-    }
-
-    public static Engagement getEngagementFromFile(String fileName) throws IOException {
-        String json = TestUtils.getEngagementJSONFromFile(fileName);
-        Engagement e = new GsonBuilder().create().fromJson(json, Engagement.class);
-        return e;
     }
 
     public static String removeWhiteSpace(String input) {

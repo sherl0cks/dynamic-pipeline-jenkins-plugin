@@ -33,7 +33,7 @@ public class ReleasePipelineJenkinsfileGeneratorTest {
     @Test
     public void shouldCorrectlyCreateSingleClusterMultiProjectS2IBuild() throws IOException {
         // given
-        Engagement engagement = TestUtils.getEngagementFromFile(TestUtils.S2I_BUILD_FILE);
+        Engagement engagement = EngagementMarshaller.getEngagementFromFileOnClasspath(TestUtils.S2I_BUILD_FILE);
 
         // when
         String jenkinsfile = ReleasePipelineJenkinsfileGenerator.generate(engagement, "jenkins");
@@ -45,7 +45,7 @@ public class ReleasePipelineJenkinsfileGeneratorTest {
     @Test
     public void shouldCorrectlyCreateSingleClusterMultiProjectScriptWithCustomBuildImageAndCustomDeployCommands() throws IOException {
         // given
-        Engagement engagement = TestUtils.getEngagementFromFile(TestUtils.CUSTOM_BUILD_IMAGE_FILE);
+        Engagement engagement = EngagementMarshaller.getEngagementFromFileOnClasspath(TestUtils.CUSTOM_BUILD_IMAGE_FILE);
 
         // when
         String jenkinsfile = ReleasePipelineJenkinsfileGenerator.generate(engagement, TestUtils.APPLICATION_NAME);
@@ -57,7 +57,7 @@ public class ReleasePipelineJenkinsfileGeneratorTest {
     @Test
     public void shouldCorrectlyCreateSingleClusterMultiProjectScriptWithMvn() throws IOException {
         // given
-        Engagement engagement = TestUtils.getEngagementFromFile(TestUtils.MVN_BUILD_FILE);
+        Engagement engagement = EngagementMarshaller.getEngagementFromFileOnClasspath(TestUtils.MVN_BUILD_FILE);
 
         // when
         String jenkinsfile = ReleasePipelineJenkinsfileGenerator.generate(engagement, TestUtils.APPLICATION_NAME);
@@ -70,7 +70,7 @@ public class ReleasePipelineJenkinsfileGeneratorTest {
     @Test
     public void shouldCorrectlyCreateSingleClusterMultiProjectScriptWithFabric8() throws IOException {
         // given
-        Engagement engagement = TestUtils.getEngagementFromFile(TestUtils.FABRIC8_BUILD_FILE);
+        Engagement engagement = EngagementMarshaller.getEngagementFromFileOnClasspath(TestUtils.FABRIC8_BUILD_FILE);
 
         // when
         String jenkinsfile = ReleasePipelineJenkinsfileGenerator.generate(engagement, TestUtils.APPLICATION_NAME);
@@ -83,7 +83,7 @@ public class ReleasePipelineJenkinsfileGeneratorTest {
     @Test
     public void shouldCorrectlyCreateAutomationApi() throws IOException {
         // given
-        Engagement engagement = TestUtils.getEngagementFromFile(TestUtils.LABS_ENV_FILE);
+        Engagement engagement = EngagementMarshaller.getEngagementFromFileOnClasspath(TestUtils.LABS_ENV_FILE);
 
         // when
         String jenkinsfile = ReleasePipelineJenkinsfileGenerator.generate(engagement, "automation-api");
@@ -96,7 +96,7 @@ public class ReleasePipelineJenkinsfileGeneratorTest {
     @Test
     public void shouldThrowExceptionForUnsupportedBuildTool() throws IOException {
         // given
-        Engagement engagement = TestUtils.getEngagementFromFile(TestUtils.UNSUPPORTED_BUILD_TOOL_FILE);
+        Engagement engagement = EngagementMarshaller.getEngagementFromFileOnClasspath(TestUtils.UNSUPPORTED_BUILD_TOOL_FILE);
 
         // when
         try {
@@ -115,7 +115,7 @@ public class ReleasePipelineJenkinsfileGeneratorTest {
     @Test
     public void shouldThrowExceptionForNoBuildTool() throws IOException {
         // given
-        Engagement engagement = TestUtils.getEngagementFromFile(TestUtils.NO_BUILD_TOOL_FILE);
+        Engagement engagement = EngagementMarshaller.getEngagementFromFileOnClasspath(TestUtils.NO_BUILD_TOOL_FILE);
 
         // when
         try {
