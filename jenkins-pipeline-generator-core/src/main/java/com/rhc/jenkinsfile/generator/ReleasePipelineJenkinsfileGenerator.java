@@ -33,7 +33,7 @@ public class ReleasePipelineJenkinsfileGenerator {
     private static final Set<String> SUPPORTED_BUILD_TOOLS = new HashSet<String>(
             Arrays.asList("node-0.10", "node-4", "mvn-3", "sh", "s2i"));
 
-    public static String generate(Engagement engagement, String applicationName) {
+    public static String generate(final Engagement engagement, final String applicationName) {
         StringBuilder script = new StringBuilder();
         validateInput(engagement, applicationName);
         script.append(initializeScript());
@@ -45,7 +45,7 @@ public class ReleasePipelineJenkinsfileGenerator {
         return script.toString();
     }
 
-    private static void validateInput(Engagement engagement, String applicationName) {
+    private static void validateInput(final Engagement engagement, final String applicationName) {
         if (applicationName == null || applicationName.isEmpty()) {
             throw new RuntimeException("applicationName cannot be null or empty");
         }
@@ -57,7 +57,7 @@ public class ReleasePipelineJenkinsfileGenerator {
         return script.toString();
     }
 
-    private static String generateCodeCheckoutStage(Engagement engagement, String applicationName) {
+    private static String generateCodeCheckoutStage(final Engagement engagement, final String applicationName) {
         StringBuilder script = new StringBuilder();
         script.append("  stage ('Code Checkout') {\n ");
         Application app = EngagementDAO.getApplicationFromBuildProject(engagement, applicationName);
@@ -70,7 +70,7 @@ public class ReleasePipelineJenkinsfileGenerator {
         return script.toString();
     }
 
-    private static String generateBuildAppStage(Engagement engagement, String applicationName) {
+    private static String generateBuildAppStage(final Engagement engagement, final String applicationName) {
         StringBuilder script = new StringBuilder();
         script.append("  stage ('Build App') {\n");
 
@@ -87,7 +87,7 @@ public class ReleasePipelineJenkinsfileGenerator {
         return script.toString();
     }
 
-    private static String generateBuildImageAndDeployToDevStage(Engagement engagement, String applicationName) {
+    private static String generateBuildImageAndDeployToDevStage(final Engagement engagement, final String applicationName) {
         StringBuilder script = new StringBuilder();
         script.append("\n  stage ('Build Image and Deploy to Dev') {\n");
         Application app = EngagementDAO.getApplicationFromBuildProject(engagement, applicationName);
@@ -110,7 +110,7 @@ public class ReleasePipelineJenkinsfileGenerator {
         return script.toString();
     }
 
-    private static String generateAllPromotionStages(Engagement engagement, String applicationName) {
+    private static String generateAllPromotionStages(final Engagement engagement, final String applicationName) {
         StringBuilder script = new StringBuilder();
         OpenShiftCluster srcCluster = EngagementDAO.getBuildCluster(engagement);
         Project srcProject = EngagementDAO.getBuildProjectForApplication(engagement, applicationName);
@@ -125,8 +125,8 @@ public class ReleasePipelineJenkinsfileGenerator {
         return script.toString();
     }
 
-    private static String generatePromoteImageStage(Engagement engagement, OpenShiftCluster destCluster,
-                                                    Project destProject, OpenShiftCluster srcCluster, Project srcProject, String applicationName) {
+    private static String generatePromoteImageStage(final Engagement engagement, final OpenShiftCluster destCluster,
+                                                    final Project destProject, final OpenShiftCluster srcCluster, final Project srcProject, final String applicationName) {
         StringBuilder script = new StringBuilder();
         script.append("\n  stage ('Deploy to ").append(destProject.getName()).append("') {\n");
         script.append("    input 'Deploy to ").append(destProject.getName()).append("?'\n");
@@ -162,7 +162,7 @@ public class ReleasePipelineJenkinsfileGenerator {
         return script.toString();
     }
 
-    private static String createBuildCommands(Application app) {
+    private static String createBuildCommands(final Application app) {
         StringBuilder script = new StringBuilder();
 
         if (app.getBuildTool() == null || app.getBuildTool().isEmpty()) {
@@ -179,7 +179,7 @@ public class ReleasePipelineJenkinsfileGenerator {
         return script.toString();
     }
 
-    private static String createListOfShellCommandsScript(Application app, String tool) {
+    private static String createListOfShellCommandsScript(final Application app, final String tool) {
         StringBuilder script = new StringBuilder();
 
         if (app.getBuildApplicationCommands() == null || app.getBuildApplicationCommands().isEmpty()) {
@@ -217,7 +217,7 @@ public class ReleasePipelineJenkinsfileGenerator {
         return script.toString();
     }
 
-    private static String createDefaultOpenShiftBuildAndDeployScript(Engagement engagement, String applicationName) {
+    private static String createDefaultOpenShiftBuildAndDeployScript(final Engagement engagement, final String applicationName) {
         StringBuilder script = new StringBuilder();
 
         Project buildProject = EngagementDAO.getBuildProjectForApplication(engagement, applicationName);
