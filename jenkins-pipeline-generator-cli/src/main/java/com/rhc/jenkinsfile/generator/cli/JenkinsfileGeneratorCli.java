@@ -17,7 +17,7 @@ package com.rhc.jenkinsfile.generator.cli;
 
 import com.rhc.automation.model.Engagement;
 import com.rhc.jenkinsfile.generator.EngagementMarshaller;
-import com.rhc.jenkinsfile.generator.ReleasePipelineJenkinsfileGenerator;
+import com.rhc.jenkinsfile.generator.ReleasePipelineGenerator;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +56,7 @@ public class JenkinsfileGeneratorCli {
         Engagement engagement = getEngagement(line);
         String applicationName = line.getArgList().get(1);
 
-        String jenkinsfileContents = ReleasePipelineJenkinsfileGenerator.generate( engagement, applicationName);
+        String jenkinsfileContents = ReleasePipelineGenerator.generate( engagement, applicationName);
 
         System.out.println( jenkinsfileContents );
 

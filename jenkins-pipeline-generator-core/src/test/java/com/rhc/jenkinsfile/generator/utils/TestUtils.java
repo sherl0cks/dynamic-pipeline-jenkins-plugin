@@ -15,6 +15,7 @@
  */
 package com.rhc.jenkinsfile.generator.utils;
 
+import com.rhc.jenkinsfile.generator.PipelineDialect;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -32,12 +33,23 @@ public class TestUtils {
     public static final String LABS_ENV_FILE = "com/rhc/jenkinsfile/generator/engagements/labs-env.json";
 
 
-    public static String getPipelineScriptFromFileWithoutWhitespace(String fileName) throws IOException {
-        return removeWhiteSpace(getPipelineScriptFromFile(fileName));
+    public static String getPipelineScriptFromFileWithoutWhitespace(String fileName, PipelineDialect dialect) throws IOException {
+        switch (dialect){
+            case JENKINSFILE_ORIGINAL:
+                return  removeWhiteSpace(getJenkinsfileOriginalPipelineScriptFromFile(fileName));
+            case JENKINSFILE_DECLARATIVE:
+                return  removeWhiteSpace(getJenkinsfileDeclativePipelineScriptFromFile(fileName));
+            default:
+                return removeWhiteSpace(getJenkinsfileOriginalPipelineScriptFromFile(fileName));
+        }
     }
 
-    public static String getPipelineScriptFromFile(String fileName) throws IOException {
-        return IOUtils.toString(TestUtils.class.getClassLoader().getResourceAsStream("com/rhc/jenkinsfile/generator/scripts/" + fileName));
+    public static String getJenkinsfileOriginalPipelineScriptFromFile(String fileName) throws IOException {
+        return IOUtils.toString(TestUtils.class.getClassLoader().getResourceAsStream("com/rhc/jenkinsfile/generator/scripts/jenkinsfile/original/" + fileName));
+    }
+
+    public static String getJenkinsfileDeclativePipelineScriptFromFile(String fileName) throws IOException {
+        return IOUtils.toString(TestUtils.class.getClassLoader().getResourceAsStream("com/rhc/jenkinsfile/generator/scripts/jenkinsfile/declarative/" + fileName));
     }
 
     public static String removeWhiteSpace(String input) {

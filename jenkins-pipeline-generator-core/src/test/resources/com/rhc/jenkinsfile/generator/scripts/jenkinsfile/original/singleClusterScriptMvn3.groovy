@@ -1,6 +1,6 @@
 node {
-	stage ('Code Checkout'){ 
-	    git url: 'https://foo.bar.com/justin.git', branch: 'master' 
+	stage ('Code Checkout'){
+		checkout scm
 	}
 
 	stage ('Build App'){

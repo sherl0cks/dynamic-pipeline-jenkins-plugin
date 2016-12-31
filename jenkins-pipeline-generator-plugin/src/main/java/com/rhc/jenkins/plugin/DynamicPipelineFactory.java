@@ -18,7 +18,7 @@ package com.rhc.jenkins.plugin;
 import com.google.gson.GsonBuilder;
 import com.rhc.automation.model.Engagement;
 import com.rhc.jenkinsfile.generator.EngagementMarshaller;
-import com.rhc.jenkinsfile.generator.ReleasePipelineJenkinsfileGenerator;
+import com.rhc.jenkinsfile.generator.ReleasePipelineGenerator;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -54,7 +54,7 @@ public class DynamicPipelineFactory implements Serializable {
 
 	public String generatePipelineScript() {
 		checkConfiguration();
-		String pipelineScript = ReleasePipelineJenkinsfileGenerator.generate(engagement, applicationName);
+		String pipelineScript = ReleasePipelineGenerator.generate(engagement, applicationName);
 		LOGGER.debug("{}{}{}","\n\n",pipelineScript, "\n\n");
 		return pipelineScript;
 	}

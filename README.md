@@ -8,9 +8,10 @@ This repository is evolving. Originally, it was focused on the development of a 
 
 ## Core Generator
 
-Take a look at the tests. It's pretty straightforward. This module builds normally right now e.g. `mvn clean install/deploy` is fine. The basics are:
+The core generation code base, which transforms the API This module builds normally right now e.g. `mvn clean install/deploy` is fine. The basics are:
 
-- `ReleasePipelineJenkinsfileGenerator` which is the main point of entry
+- `ReleasePipelineGenerator` which is the main point of entry and provides a single client interface regardless of the dialect of Jenkinsfile
+- `PipelineDialect` defines the dialects the generator supports, which currently include the original syntax and declarative syntax (experimental). Overtime, this may be extended to support non-Jenkins dialects like GoCD / Drone / etc, but we haven't crossed that bridge.
 - `EngagementDAO` which is used to manipulate the `Engagement` object hierarchy defined in our [Automation API](https://github.com/rht-labs/api-design) into a format more convenient for Jenkinsfile generation.
 
 ## CLI

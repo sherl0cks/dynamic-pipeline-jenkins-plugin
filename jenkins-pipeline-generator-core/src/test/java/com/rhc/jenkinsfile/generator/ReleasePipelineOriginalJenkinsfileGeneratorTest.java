@@ -25,9 +25,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 
-public class ReleasePipelineJenkinsfileGeneratorTest {
+public class ReleasePipelineOriginalJenkinsfileGeneratorTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ReleasePipelineJenkinsfileGeneratorTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReleasePipelineOriginalJenkinsfileGeneratorTest.class);
 
 
     @Test
@@ -36,10 +36,10 @@ public class ReleasePipelineJenkinsfileGeneratorTest {
         Engagement engagement = EngagementMarshaller.getEngagementFromFileOnClasspath(TestUtils.S2I_BUILD_FILE);
 
         // when
-        String jenkinsfile = ReleasePipelineJenkinsfileGenerator.generate(engagement, "jenkins");
+        String jenkinsfile = ReleasePipelineGenerator.generate(engagement, "jenkins");
 
         // then
-        Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptS2I.groovy"), TestUtils.removeWhiteSpace(jenkinsfile));
+        Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptS2I.groovy", PipelineDialect.JENKINSFILE_ORIGINAL), TestUtils.removeWhiteSpace(jenkinsfile));
     }
 
     @Test
@@ -48,10 +48,10 @@ public class ReleasePipelineJenkinsfileGeneratorTest {
         Engagement engagement = EngagementMarshaller.getEngagementFromFileOnClasspath(TestUtils.CUSTOM_BUILD_IMAGE_FILE);
 
         // when
-        String jenkinsfile = ReleasePipelineJenkinsfileGenerator.generate(engagement, TestUtils.APPLICATION_NAME);
+        String jenkinsfile = ReleasePipelineGenerator.generate(engagement, TestUtils.APPLICATION_NAME);
 
         // then
-        Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptCustomCommands.groovy"), TestUtils.removeWhiteSpace(jenkinsfile));
+        Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptCustomCommands.groovy", PipelineDialect.JENKINSFILE_ORIGINAL), TestUtils.removeWhiteSpace(jenkinsfile));
     }
 
     @Test
@@ -60,10 +60,10 @@ public class ReleasePipelineJenkinsfileGeneratorTest {
         Engagement engagement = EngagementMarshaller.getEngagementFromFileOnClasspath(TestUtils.MVN_BUILD_FILE);
 
         // when
-        String jenkinsfile = ReleasePipelineJenkinsfileGenerator.generate(engagement, TestUtils.APPLICATION_NAME);
+        String jenkinsfile = ReleasePipelineGenerator.generate(engagement, TestUtils.APPLICATION_NAME);
 
         // then
-        Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptMvn3.groovy"), TestUtils.removeWhiteSpace(jenkinsfile));
+        Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptMvn3.groovy", PipelineDialect.JENKINSFILE_ORIGINAL), TestUtils.removeWhiteSpace(jenkinsfile));
     }
 
 
@@ -73,10 +73,10 @@ public class ReleasePipelineJenkinsfileGeneratorTest {
         Engagement engagement = EngagementMarshaller.getEngagementFromFileOnClasspath(TestUtils.FABRIC8_BUILD_FILE);
 
         // when
-        String jenkinsfile = ReleasePipelineJenkinsfileGenerator.generate(engagement, TestUtils.APPLICATION_NAME);
+        String jenkinsfile = ReleasePipelineGenerator.generate(engagement, TestUtils.APPLICATION_NAME);
 
         // then
-        Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptFabric8.groovy"), TestUtils.removeWhiteSpace(jenkinsfile));
+        Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("singleClusterScriptFabric8.groovy", PipelineDialect.JENKINSFILE_ORIGINAL), TestUtils.removeWhiteSpace(jenkinsfile));
     }
 
 
@@ -86,10 +86,10 @@ public class ReleasePipelineJenkinsfileGeneratorTest {
         Engagement engagement = EngagementMarshaller.getEngagementFromFileOnClasspath(TestUtils.LABS_ENV_FILE);
 
         // when
-        String jenkinsfile = ReleasePipelineJenkinsfileGenerator.generate(engagement, "automation-api");
+        String jenkinsfile = ReleasePipelineGenerator.generate(engagement, "automation-api");
 
         // then
-        Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("labs-env.groovy"), TestUtils.removeWhiteSpace(jenkinsfile));
+        Assert.assertEquals(TestUtils.getPipelineScriptFromFileWithoutWhitespace("labs-env.groovy", PipelineDialect.JENKINSFILE_ORIGINAL), TestUtils.removeWhiteSpace(jenkinsfile));
     }
 
 
@@ -100,7 +100,7 @@ public class ReleasePipelineJenkinsfileGeneratorTest {
 
         // when
         try {
-            ReleasePipelineJenkinsfileGenerator.generate(engagement, TestUtils.APPLICATION_NAME);
+            ReleasePipelineGenerator.generate(engagement, TestUtils.APPLICATION_NAME);
             Assert.fail("did not throw error");
         } catch (RuntimeException e) {
             // then
@@ -119,7 +119,7 @@ public class ReleasePipelineJenkinsfileGeneratorTest {
 
         // when
         try {
-            ReleasePipelineJenkinsfileGenerator.generate(engagement, TestUtils.APPLICATION_NAME);
+            ReleasePipelineGenerator.generate(engagement, TestUtils.APPLICATION_NAME);
             Assert.fail("did not throw error");
         } catch (RuntimeException e) {
             // then
