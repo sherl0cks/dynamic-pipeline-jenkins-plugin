@@ -11,7 +11,7 @@ node {
 	}
 
 	stage ('Build Image and Deploy to Dev'){
-		echo 'Found label "provider=fabric8", we are generating the s2i binary build commands'
+		echo 'Found label "provider=fabric8" or "s2i=binary", we are generating the s2i binary build commands'
 		sh 'oc login 10.1.2.2:8443 --token=$OPENSHIFT_API_TOKEN --insecure-skip-tls-verify'
 		sh 'oc start-build cool-application-name --from-dir=. --follow -n dev-project'
 	}

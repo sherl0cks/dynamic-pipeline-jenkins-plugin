@@ -31,10 +31,10 @@ public class CommonJenkinsfileScriptsGenerator {
     public static String createBuildAppScript(final Application app) {
         StringBuilder script = new StringBuilder();
         if (app.getContextDir() == null || app.getContextDir().isEmpty()) {
-            script.append(CommonJenkinsfileScriptsGenerator.createBuildCommands(app));
+            script.append(createBuildCommands(app));
         } else {
             script.append("  dir( '").append(app.getContextDir()).append("' ) {\n  ");
-            script.append(CommonJenkinsfileScriptsGenerator.createBuildCommands(app));
+            script.append(createBuildCommands(app));
             script.append("  }\n");
         }
         return script.toString();
@@ -43,13 +43,13 @@ public class CommonJenkinsfileScriptsGenerator {
     public static String createBuildImageScript(final Engagement engagement, final String applicationName) {
         StringBuilder script = new StringBuilder();
         Application app = EngagementDAO.getApplicationFromBuildProject(engagement, applicationName);
-        if (app.getLabels().containsKey("provider") && app.getLabels().get("provider").equals("fabric8")) {
-            script.append("    echo 'Found label \"provider=fabric8\", we are generating the s2i binary build commands'\n");
+        if (isS2IBinaryBuild(app)) {
+            script.append("    echo 'Found label \"provider=fabric8\" or \"s2i=binary\", we are generating the s2i binary build commands'\n");
             script.append(String.format("    sh 'oc login %s --token=$OPENSHIFT_API_TOKEN --insecure-skip-tls-verify'%n", EngagementDAO.getBuildCluster(engagement).getOpenshiftHostEnv()));
             script.append(String.format("    sh 'oc start-build %s --from-dir=. --follow -n %s'", applicationName, EngagementDAO.getBuildProjectForApplication(engagement, applicationName).getName()));
         } else if (app.getBuildImageCommands() == null || app.getBuildImageCommands().isEmpty()) {
             script.append("    echo 'No buildImageCommands, using default OpenShift image build and deploy'\n");
-            script.append(CommonJenkinsfileScriptsGenerator.createDefaultOpenShiftBuildAndDeployScript(engagement, applicationName));
+            script.append(createDefaultOpenShiftBuildAndDeployScript(engagement, applicationName));
         } else {
             script.append("    echo 'Found buildImageCommands, executing in shell'\n");
             List<String> commands = app.getBuildImageCommands();
@@ -154,5 +154,16 @@ public class CommonJenkinsfileScriptsGenerator {
                 buildProjectCluser.getOpenshiftHostEnv(), applicationName, buildProject.getName()));
 
         return script.toString();
+    }
+
+    public static boolean isS2IBinaryBuild(final Application app) {
+        if (app.getLabels().containsKey("provider") && app.getLabels().get("provider").equals("fabric8")) {
+            return true;
+        }
+        if (app.getLabels().containsKey("s2i") && app.getLabels().get("s2i").equals("binary")) {
+            return true;
+        }
+
+        return false;
     }
 }

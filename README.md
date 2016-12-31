@@ -14,6 +14,16 @@ The core generation code base, which transforms the API This module builds norma
 - `PipelineDialect` defines the dialects the generator supports, which currently include the original syntax and declarative syntax (experimental). Overtime, this may be extended to support non-Jenkins dialects like GoCD / Drone / etc, but we haven't crossed that bridge.
 - `EngagementDAO` which is used to manipulate the `Engagement` object hierarchy defined in our [Automation API](https://github.com/rht-labs/api-design) into a format more convenient for Jenkinsfile generation.
 
+### S2I Support
+
+OpenShift S2I is a multifaceted beast. Here are the ways the generated pipelines integrate:
+
+1. All images builds are assumed to be done via S2I
+2. By default, the image builds will using [git repository source builds](https://docs.openshift.com/container-platform/3.3/dev_guide/builds.html#source-code)
+3. S2I binary builds can switched on by ensuring your application has one of the following labels:
+  * `provider=fabric8`
+  * `s2i=binary`
+
 ## CLI
 
 Simple fat JAR to provide a command line interface to generate Jenkinsfile from the engagement. You can download a version from the [Jenkins Build](https://jenkins.core.rht-labs.com/job/jenkins-pipeline-generator-ci/) (download the `*-jar-with-dependencies.jar` version).

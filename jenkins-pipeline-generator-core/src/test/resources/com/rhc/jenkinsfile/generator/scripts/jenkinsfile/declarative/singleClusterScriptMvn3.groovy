@@ -21,9 +21,9 @@ pipeline{
 
 		stage ('Build Image and Deploy to Dev') {
 			steps {
-				echo 'No buildImageCommands, using default OpenShift image build and deploy'
-				openshiftBuild apiURL: '10.1.2.2:8443', authToken: $OPENSHIFT_API_TOKEN, bldCfg: 'cool-application-name', checkForTriggeredDeployments: 'true', namespace: 'dev-project', showBuildLogs: 'true'
-				openshiftVerifyDeployment apiURL: '10.1.2.2:8443', authToken: $OPENSHIFT_API_TOKEN, depCfg: 'cool-application-name', namespace: 'dev-project'
+				echo 'Found label "provider=fabric8" or "s2i=binary", we are generating the s2i binary build commands'
+				sh 'oc login 10.1.2.2:8443 --token=$OPENSHIFT_API_TOKEN --insecure-skip-tls-verify'
+				sh 'oc start-build cool-application-name --from-dir=. --follow -n dev-project'
 			}
 		}
 
