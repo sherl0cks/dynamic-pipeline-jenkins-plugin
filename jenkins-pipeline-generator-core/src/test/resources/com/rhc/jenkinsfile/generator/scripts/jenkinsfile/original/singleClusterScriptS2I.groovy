@@ -1,10 +1,6 @@
 node {
-	stage ('Code Checkout') { 
-		git url: 'https://github.com/sherl0cks/openshift-jenkins-s2i-config.git', branch: 'fixing-seed-jobs'
-	}
-
-	stage ('Build App') {
-		echo 'Using build tool: s2i'
+	stage ('Code Checkout') {
+		checkout scm
 	}
 
 	stage ('Build Image and Deploy to Dev') {

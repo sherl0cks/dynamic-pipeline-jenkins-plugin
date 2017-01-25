@@ -1,11 +1,10 @@
 /*
- * Copyright (C) 2016 Original Authors
+ * Copyright (C) 2016 2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,68 +12,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.rhc.jenkinsfile.generator;
 
 import com.rhc.automation.model.Application;
 import com.rhc.automation.model.Engagement;
 import com.rhc.automation.model.OpenShiftCluster;
 import com.rhc.automation.model.Project;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-public class ReleasePipelineJenkinsfileGenerator {
+public class CommonJenkinsfileScriptsGenerator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ReleasePipelineJenkinsfileGenerator.class);
-    private static final Set<String> SUPPORTED_BUILD_TOOLS = new HashSet<String>(
-            Arrays.asList("node-0.10", "node-4", "mvn-3", "sh", "s2i"));
-
-    public static String generate(final Engagement engagement, final String applicationName) {
-        StringBuilder script = new StringBuilder();
-        validateInput(engagement, applicationName);
-        script.append(initializeScript());
-        script.append(generateCodeCheckoutStage(engagement, applicationName));
-        script.append(generateBuildAppStage(engagement, applicationName));
-        script.append(generateBuildImageAndDeployToDevStage(engagement, applicationName));
-        script.append(generateAllPromotionStages(engagement, applicationName));
-        script.append(finalizeScript());
-        return script.toString();
+    public static String createCodeCheckoutScript() {
+        return "checkout scm";
     }
 
-    private static void validateInput(final Engagement engagement, final String applicationName) {
-        if (applicationName == null || applicationName.isEmpty()) {
-            throw new RuntimeException("applicationName cannot be null or empty");
-        }
-    }
-
-    private static String initializeScript() {
+    public static String createBuildAppScript(final Application app) {
         StringBuilder script = new StringBuilder();
-        script.append("node {\n");
-        return script.toString();
-    }
-
-    private static String generateCodeCheckoutStage(final Engagement engagement, final String applicationName) {
-        StringBuilder script = new StringBuilder();
-        script.append("  stage ('Code Checkout') {\n ");
-        Application app = EngagementDAO.getApplicationFromBuildProject(engagement, applicationName);
-        if (app == null) {
-            throw new RuntimeException(String.format("Unable to find application '%s' in your Engagement object. Double check your data and configuration. Be aware that search is currently case sensitive.", applicationName));
-        }
-        String branch = (app.getScmRef() == null || app.getScmRef().isEmpty()) ? "master" : app.getScmRef();
-        script.append(String.format("    git url: '%s', branch: '%s'%n", app.getScmUrl(), branch));
-        script.append("  }\n\n");
-        return script.toString();
-    }
-
-    private static String generateBuildAppStage(final Engagement engagement, final String applicationName) {
-        StringBuilder script = new StringBuilder();
-        script.append("  stage ('Build App') {\n");
-
-        Application app = EngagementDAO.getApplicationFromBuildProject(engagement, applicationName);
         if (app.getContextDir() == null || app.getContextDir().isEmpty()) {
             script.append(createBuildCommands(app));
         } else {
@@ -82,17 +37,14 @@ public class ReleasePipelineJenkinsfileGenerator {
             script.append(createBuildCommands(app));
             script.append("  }\n");
         }
-
-        script.append("  }\n\n");
         return script.toString();
     }
 
-    private static String generateBuildImageAndDeployToDevStage(final Engagement engagement, final String applicationName) {
+    public static String createBuildImageScript(final Engagement engagement, final String applicationName) {
         StringBuilder script = new StringBuilder();
-        script.append("\n  stage ('Build Image and Deploy to Dev') {\n");
         Application app = EngagementDAO.getApplicationFromBuildProject(engagement, applicationName);
-        if (app.getLabels().containsKey("provider") && app.getLabels().get("provider").equals("fabric8")) {
-            script.append("    echo 'Found label \"provider=fabric8\", we are generating the s2i binary build commands'\n");
+        if (isS2IBinaryBuild(app)) {
+            script.append("    echo 'Found label \"provider=fabric8\" or \"s2i=binary\", we are generating the s2i binary build commands'\n");
             script.append(String.format("    sh 'oc login %s --token=$OPENSHIFT_API_TOKEN --insecure-skip-tls-verify'%n", EngagementDAO.getBuildCluster(engagement).getOpenshiftHostEnv()));
             script.append(String.format("    sh 'oc start-build %s --from-dir=. --follow -n %s'", applicationName, EngagementDAO.getBuildProjectForApplication(engagement, applicationName).getName()));
         } else if (app.getBuildImageCommands() == null || app.getBuildImageCommands().isEmpty()) {
@@ -105,30 +57,12 @@ public class ReleasePipelineJenkinsfileGenerator {
                 script.append("  sh '").append(command).append("' \n");
             }
         }
-        script.append("  }\n");
-
         return script.toString();
     }
 
-    private static String generateAllPromotionStages(final Engagement engagement, final String applicationName) {
-        StringBuilder script = new StringBuilder();
-        OpenShiftCluster srcCluster = EngagementDAO.getBuildCluster(engagement);
-        Project srcProject = EngagementDAO.getBuildProjectForApplication(engagement, applicationName);
-
-        for (OpenShiftCluster cluster : engagement.getOpenshiftClusters()) {
-            for (Project project : EngagementDAO.getPromotionProjectsForApplication(engagement, applicationName)) {
-                script.append(generatePromoteImageStage(engagement, cluster, project, srcCluster, srcProject, applicationName));
-                srcProject = project;
-            }
-            srcCluster = cluster;
-        }
-        return script.toString();
-    }
-
-    private static String generatePromoteImageStage(final Engagement engagement, final OpenShiftCluster destCluster,
+    public static String createPromotionStageScript(final Engagement engagement, final OpenShiftCluster destCluster,
                                                     final Project destProject, final OpenShiftCluster srcCluster, final Project srcProject, final String applicationName) {
         StringBuilder script = new StringBuilder();
-        script.append("\n  stage ('Deploy to ").append(destProject.getName()).append("') {\n");
         script.append("    input 'Deploy to ").append(destProject.getName()).append("?'\n");
 
         Application app = EngagementDAO.getApplicationFromBuildProject(engagement, applicationName);
@@ -150,36 +84,24 @@ public class ReleasePipelineJenkinsfileGenerator {
             }
         }
 
-        script.append("  }\n");
-
         return script.toString();
     }
 
-    private static String finalizeScript() {
+    public static String createBuildCommands(final Application app) {
         StringBuilder script = new StringBuilder();
 
-        script.append("}\n");
-        return script.toString();
-    }
-
-    private static String createBuildCommands(final Application app) {
-        StringBuilder script = new StringBuilder();
-
-        if (app.getBuildTool() == null || app.getBuildTool().isEmpty()) {
-            throw new RuntimeException("A build tool must be set for the application. Currently support tools are: "
-                    + SUPPORTED_BUILD_TOOLS);
-        } else if (SUPPORTED_BUILD_TOOLS.contains(app.getBuildTool())) {
+        if (GeneratorConstants.SUPPORTED_BUILD_TOOLS.contains(app.getBuildTool())) {
             script.append("    echo 'Using build tool: ").append(app.getBuildTool()).append("'\n");
             script.append(createListOfShellCommandsScript(app, app.getBuildTool()));
         } else {
             throw new RuntimeException(
-                    app.getBuildTool() + " is currently unsupported. Please select one of " + SUPPORTED_BUILD_TOOLS);
+                    app.getBuildTool() + " is currently unsupported. Please select one of " + GeneratorConstants.SUPPORTED_BUILD_TOOLS);
         }
 
         return script.toString();
     }
 
-    private static String createListOfShellCommandsScript(final Application app, final String tool) {
+    public static String createListOfShellCommandsScript(final Application app, final String tool) {
         StringBuilder script = new StringBuilder();
 
         if (app.getBuildApplicationCommands() == null || app.getBuildApplicationCommands().isEmpty()) {
@@ -217,7 +139,7 @@ public class ReleasePipelineJenkinsfileGenerator {
         return script.toString();
     }
 
-    private static String createDefaultOpenShiftBuildAndDeployScript(final Engagement engagement, final String applicationName) {
+    public static String createDefaultOpenShiftBuildAndDeployScript(final Engagement engagement, final String applicationName) {
         StringBuilder script = new StringBuilder();
 
         Project buildProject = EngagementDAO.getBuildProjectForApplication(engagement, applicationName);
@@ -234,4 +156,14 @@ public class ReleasePipelineJenkinsfileGenerator {
         return script.toString();
     }
 
+    public static boolean isS2IBinaryBuild(final Application app) {
+        if (app.getLabels().containsKey("provider") && app.getLabels().get("provider").equals("fabric8")) {
+            return true;
+        }
+        if (app.getLabels().containsKey("s2i") && app.getLabels().get("s2i").equals("binary")) {
+            return true;
+        }
+
+        return false;
+    }
 }

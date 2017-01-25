@@ -20,7 +20,7 @@
 								"scm_url": "https://foo.bar.com/justin.git",
 								"name": "cool-application-name",
 								"labels": {
-									
+									"s2i": "binary"
 								},
 								"environment_variables": {
 									

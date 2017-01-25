@@ -32,7 +32,7 @@ public class TestUtils {
 	public static final String MVN_BUILD_FILE = "com/rhc/jenkins/plugin/engagements/singleClusterMultiProjectWithMvn.json";
 	public static final String FABRIC8_BUILD_FILE = "com/rhc/jenkins/plugin/engagements/singleClusterMultiProjectWithFabric8.json";
 	public static final String UNSUPPORTED_BUILD_TOOL_FILE = "com/rhc/jenkins/plugin/engagements/singleClusterMultiProjectWithUnsupportedBuildTool.json";
-	public static final String LABS_ENV_FILE = "com/rhc/jenkins/plugin/engagements/labs-env.json";
+	public static final String LABS_ENV_FILE = "com/rhc/jenkins/plugin/engagements/com.rhc.jenkinsfile.generator.scripts.jenkinsfile.com.rhc.jenkinsfile.generator.scripts.jenkinsfile.original.labs-env.json";
 
 	
 	public static String getPipelineScriptFromFileWithoutWhitespace(String fileName) throws IOException {

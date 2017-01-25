@@ -8,10 +8,21 @@ This repository is evolving. Originally, it was focused on the development of a 
 
 ## Core Generator
 
-Take a look at the tests. It's pretty straightforward. This module builds normally right now e.g. `mvn clean install/deploy` is fine. The basics are:
+The core generation code base, which transforms the API This module builds normally right now e.g. `mvn clean install/deploy` is fine. The basics are:
 
-- `ReleasePipelineJenkinsfileGenerator` which is the main point of entry
+- `ReleasePipelineGenerator` which is the main point of entry and provides a single client interface regardless of the dialect of Jenkinsfile
+- `PipelineDialect` defines the dialects the generator supports, which currently include the original syntax and declarative syntax (experimental). Overtime, this may be extended to support non-Jenkins dialects like GoCD / Drone / etc, but we haven't crossed that bridge.
 - `EngagementDAO` which is used to manipulate the `Engagement` object hierarchy defined in our [Automation API](https://github.com/rht-labs/api-design) into a format more convenient for Jenkinsfile generation.
+
+### S2I Support
+
+OpenShift S2I is a multifaceted beast. Here are the ways the generated pipelines integrate:
+
+1. All images builds are assumed to be done via S2I
+2. By default, the image builds will using [git repository source builds](https://docs.openshift.com/container-platform/3.3/dev_guide/builds.html#source-code)
+3. S2I binary builds can switched on by ensuring your application has one of the following labels:
+  * `provider=fabric8`
+  * `s2i=binary`
 
 ## CLI
 
