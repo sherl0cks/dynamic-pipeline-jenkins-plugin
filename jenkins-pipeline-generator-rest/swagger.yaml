@@ -1,0 +1,92 @@
+swagger: '2.0'
+
+
+info:
+  version: "0.1.0"
+  title: Red Hat Open Innovation Labs Jenkinsfile Generator
+  description: A simple API to generate [Jenkinsfile](https://jenkins.io/doc/book/pipeline/) from the [Red Hat Open Innovation Labs Automation API Model](https://github.com/rht-labs/api-design/blob/master/swagger.yaml)
+  contact:
+    name: "Red Hat Open Innovation Labs"
+    url: "https://github.com/rht-labs/api-design"
+    email: "rhc-open-innovation-labs@redhat.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+paths:
+
+  /jenkinsfile/{applicationName}:
+    get:
+        # Describe this verb here. Note: you can use markdown
+        description: |
+          Generates a [Jenkinsfile](https://jenkins.io/doc/book/pipeline/) for `applicationName` from the `Engagement` found at `engagementUrl`.
+
+        parameters:
+          -
+            name: applicationName
+            in: path
+            description: "Name of the application in the `Engagement` object to generate the pipeline for"
+            required: true
+            type: string
+          -
+            name: engagementUrl
+            in: query
+            description: "Url to a valid [Engagement object](https://github.com/rht-labs/api-design/blob/master/swagger.yaml#L216)"
+            required: true
+            type: string
+            format: url
+
+        responses:
+          200:
+            description: Successful response
+            schema:
+              title: Jenkinsfile
+              type: string
+          400:
+            description: Bad request
+            schema:
+              $ref: '#/definitions/ErrorModel'
+
+    post:
+        # Describe this verb here. Note: you can use markdown
+        description: |
+          Generates a [Jenkinsfile](https://jenkins.io/doc/book/pipeline/) for `applicationName` from the `Engagement` found in body.
+
+        parameters:
+          -
+            name: applicationName
+            in: path
+            description: "Name of the application in the `Engagement` object to generate the pipeline for"
+            required: true
+            type: string
+          -
+            name: engagement
+            in: body
+            description: "Valid [Engagement object](https://github.com/rht-labs/api-design/blob/master/swagger.yaml#L216)"
+            required: true
+            schema:
+              type: object
+
+        responses:
+          200:
+            description: Successful response
+            schema:
+              title: Jenkinsfile
+              type: string
+          400:
+            description: Bad request
+            schema:
+              $ref: '#/definitions/ErrorModel'
+
+definitions:
+  ErrorModel:
+    type: object
+    required:
+    - message
+    - code
+    properties:
+      message:
+        type: string
+      code:
+        type: integer
+        minimum: 100
+        maximum: 600

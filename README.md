@@ -24,6 +24,8 @@ OpenShift S2I is a multifaceted beast. Here are the ways the generated pipelines
   * `provider=fabric8`
   * `s2i=binary`
 
+## REST API
+
 ## CLI
 
 Simple fat JAR to provide a command line interface to generate Jenkinsfile from the engagement. You can download a version from the [Jenkins Build](https://jenkins.core.rht-labs.com/job/jenkins-pipeline-generator-ci/) (download the `*-jar-with-dependencies.jar` version).
@@ -42,23 +44,7 @@ Simple fat JAR to provide a command line interface to generate Jenkinsfile from 
 
 ## Jenkins Plugin
 
-While this is work our work started, we're likely going to eschew efforts on this endpoint in favor of the CLI and REST API. 
-
-*The current build fails maven enforcer rules defined by the Jenkins plugin parent, so you must build with `mvn clean install -Denforcer.skip=true`*
-
-Built around the following concepts:
-
-1. providing a declarative data model for environment promotion. this work is currently being done [here](https://github.com/rht-labs/api-design)
-2. consuming the data model Jenkins global variable called `dynamicPipeline`, which can retrieve the data model from the SCM repo or via http.
-3. generating Jenkinsfile from the data model and then executing it in the same Groovy shell as the pipeline (know as a `CpsScript` in the Jenkins lingo).
-
-
-### Required Jenkins Plugin Variables
-
-This is a list of variables that must be set in Jenkins in order to ensure that the generate script executes as expected. If you are using the seed jobs in the [rht-labs s2i configuration](https://github.com/rht-labs/openshift-jenkins-s2i-config) then these variables will be exposed as require parameters in the seed jobs.
-
-- `$OPENSHIFT_API_TOKEN`: Used to power both the OpenShift Jenkins Pipeline plugin, as well as a few `oc` commands not yet supported in the plugin. This token should align to an OpenShift service account where possible to ensure the configuration doesn't get stale.
-
+While this is work has been deprecated. See the v0.3.0 tag for the code.
 
 ## Inspiration
 
